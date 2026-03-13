@@ -1,0 +1,592 @@
+Whair Beta Sprint
+Competitor Review, Pillar Assessment & Beta Readiness
+Prepared by Alae | March 2026
+
+Competitor Overview
+Below is a breakdown of each competitor based on research across their websites, app listings,
+press coverage, investor announcements, job postings, vendor case studies, and available user
+feedback.
+
+Loti AI
+Founded by Luke Arrigoni, Rebekah Arrigoni, and Hirak Chhatbar. Arrigoni previously ran an AI
+consulting firm and had a data science role at CAA. The company has raised $22.85M total ($6.65M
+seed from FUSE, Bling Capital, Khosla Ventures, Ensemble, Alpha Edison, K5 Tokyo Black + $16.2M
+Series A led by Khosla Ventures).
+What they actually do: Loti is an internet-scale face and voice scanning platform. Users enroll via a
+live video selfie (liveness check, not just a photo upload), and Loti scans the public internet daily
+including social media and adult sites. Users review detections and choose to authorize or remove
+content. Loti claims a 95% takedown success rate within 17 hours and has partnerships with WME
+and CAA for talent protection and CMG Worldwide for estate/legacy protection.
+Under the hood: A Weaviate case study confirms Loti processes 120-140 million images daily,
+manages approximately 9 billion facial vectors, uses 3.5 PB on AWS S3, and runs extensive GPU
+infrastructure. Their co-founder confirmed 40+ proprietary ML models for facial and voice recognition.
+Their job postings reveal a stack of Python/Node.js, PostgreSQL/MongoDB/DynamoDB,
+Docker/Kubernetes, PyTorch/TensorFlow, and Weaviate as the vector database. A Web3 DevOps
+posting references IPFS, Arweave, and blockchain nodes, suggesting exploratory on-chain
+enforcement/registry work.
+Platform partnerships: The Weaviate case study mentions TikTok, Meta, and Pinterest as platforms
+where Loti has relationships to expedite takedowns.
+Gaps and weaknesses: Consumer app has almost no public reviews on iOS or Google Play,
+meaning real user validation of UX and false positive rates is thin. Loti itself frames the DMCA as
+limited for likeness harms, relying on partnerships to close gaps. Their API docs appear
+gated/access-controlled, not publicly available. Voice protection is marketed but the actual
+mechanism (watermarking vs fingerprinting vs deepfake detection) is not documented. No C2PA or
+content provenance features.
+
+Helos AI
+Founded by Adi Kol and Keano Katalan, based in Deerfield Beach, FL. Listed as 2-10 employees
+on LinkedIn. No public funding rounds found.
+
+What they claim to do: Helos markets itself as a real-time impersonation defense platform for
+agents, managers, IP attorneys, and brand teams. They claim active monitoring, instant takedown
+protocols, evidence bundles (content hashes, timestamps, screenshots, historical change logs), and
+automatic licensing and royalty collection. Their LinkedIn adds claims of cryptographic registration of
+Natural Rights and licensing via smart contracts.
+What is actually verifiable: Very little beyond marketing copy. The entire product is demo-gated
+with no public signup, no app store presence, no self-serve funnel, and no credible third-party demo
+walkthroughs. No pricing is posted. No independent validation of any technical claims was found.
+The scope of claims (global monitoring, evidence-grade logging, takedown automation, smart
+contract licensing, royalty automation) versus the team size of 2-10 people raises questions about
+execution capacity.
+Confidence assessment: Their monitoring and enforcement workflow is likely real at some level.
+Evidence collection claims are unverified. Smart contract licensing and automatic royalty collection
+are marketing only based on available evidence.
+
+AXM
+Founded by Archie Davis (CEO), Andrew Farrior (COO), and Jameson Parker (CTO). Listed as
+2-10 employees. No public funding rounds found.
+What they do: AXM is building what they call Digital Public Infrastructure (DPI) for cultural IP. They
+focus on registering, governing, and licensing cultural assets using stable identifiers (AXM IDs),
+consent registries, and fallback licensing mechanisms. They model their approach after national
+identity DPI systems like Aadhaar. Axios confirmed a pilot involving Malcolm X’s estate and Katt
+Williams’ company. AXM claims to have indexed over $50M in cultural assets on their beta platform.
+Programs and credibility signals: Accepted into NVIDIA Inception (a free startup program offering
+co-marketing and resources, not investment). Claims selection for WIPO’s Scale Up Your IP program
+and membership in the Creative Commons Open Culture Platform. Claims UNIDO digital innovation
+award, though the captured source only shows AXM as a shortlisted finalist, not a confirmed winner.
+Critical gap: AXM has no detection capability at all. They are a rights registry and governance layer,
+not a scanning or enforcement product. They could be complementary to a detection platform but are
+not competitive with one. They are also not shipping a consumer product, everything is pilot-based
+and institutional.
+
+Where We Stand
+
+Where We Are Ahead
+• Verification is confirmed white space. None of the three competitors are leading with
+C2PA, content provenance, or proof-of-origin as a core product feature. Loti does a live
+identity check at onboarding but that is user verification, not content verification. Helos
+collects evidence artifacts but does not use any standardized provenance framework. AXM is
+the closest philosophically with their authorship registry but they do not mention C2PA and
+are not shipping a consumer-facing product.
+• YouTube is already adopting C2PA. YouTube has rolled out content labels based on the
+C2PA standard, and only devices and tools supporting C2PA 2.1+ can generate the metadata
+for those labels. This means the ecosystem is moving toward exactly what our Verification
+pillar is built around.
+• The integrated four-pillar loop is unique. Loti and Helos are detection and enforcement
+focused. AXM is verification and monetization focused. No one is connecting all four into a
+single closed-loop system. Detection alone is a commodity. The loop is the moat.
+• Compliance framing is timely. The regulatory landscape is accelerating (covered in detail
+later in this document) and positions Whair as infrastructure that platforms and brands will
+need, not just a creator tool.
+
+Where We Are Behind
+• Loti has massive operational scale. 120-140 million images processed daily, 9 billion facial
+vectors, 3.5 petabytes on S3, 40+ proprietary ML models, and $22.85M in funding. We cannot
+out-scale them at beta. We should not try.
+• Platform relationships for faster takedowns. Loti has confirmed relationships with TikTok,
+Meta, and Pinterest that expedite removals. They also have partnerships with WME, CAA,
+and CMG Worldwide that give them access to high-profile talent as early customers. These
+relationships take time to build.
+• Consumer onboarding polish. Loti has mobile apps on iOS and Google Play with a live
+video selfie enrollment flow. A beta user comparing us to Loti will expect at minimum a
+smooth identity enrollment, a dashboard consolidating detections and actions, and clear
+enforcement workflows.
+• Voice is the weakest area industry-wide. Even Loti, which markets voice recognition and
+protection and collects audio clips during onboarding, does not publicly document what their
+voice protection actually does technically. There is no equivalent of PimEyes for voice.
+Detecting an AI-generated voice clone (for example someone using a creator’s voice to make
+a song) requires speaker verification plus deepfake audio classification, and the tooling for
+this is still early across the board.
+
+Features We Need to Account For in Beta
+Based on competitor products, these are the table-stakes features a beta user will expect from a
+product in this space:
+
+• Identity enrollment that goes beyond “upload a selfie.” Loti’s live video capture sets the
+expectation. At minimum we need multi-photo capture with some form of liveness or manual
+verification.
+• A monitoring and alerting loop. Daily scans or near-real-time alerts when something is
+found.
+• Case management. A list of incidents with URLs, timestamps, screenshots, match
+confidence, and status tracking to support takedowns and disputes.
+• Takedown initiation. Templated notices and workflows that route to the right platform
+reporting forms.
+
+Four Pillars Assessment
+
+Pillar Assessment Rationale
+Verification Best candidate for
+excellent
+
+C2PA tools are free and open source, YouTube is already
+adopting the standard, and none of our competitors are
+doing this. Lowest cost, highest differentiation, fastest to
+build.
+
+Detection Demo-ready AWS Rekognition and Google Cloud Vision give us a
+working face matching and web occurrence pipeline. We
+scope it as targeted discovery (user-submitted URLs and
+scheduled monitoring of specific sources) rather than
+trying to crawl the whole internet.
+
+Enforcement Demo-ready Semi-manual with templates, pre-filled forms, evidence
+packet generation, and case tracking. Platform reporting
+entry points for YouTube, Instagram, TikTok, and X are
+documented and ready to integrate.
+
+Monetization Conceptual Present in the UI as a licensing decision flow (approve,
+deny, set price) with Stripe Connect as the payment
+backbone. Does not need to be fully functional at beta.
+
+Competitor Pillar Mapping
+How each competitor maps against the four pillars, with confidence levels:
+
+Pillar Loti AI Helos AI AXM
+Detection Confirmed strong. 120-140M
+images/day, 9B vectors,
+daily scanning across public
+internet and adult sites.
+Face + voice.
+
+Claimed. Real-time
+monitoring marketed but no
+technical detail or third-party
+validation. Likely real at
+narrow scope.
+
+None. Not part of their
+model.
+
+Verification Onboarding identity check
+only (live video selfie). No
+content provenance, no
+C2PA.
+
+Evidence artifacts (hashes,
+timestamps) but no
+standardized provenance.
+No C2PA.
+
+Strong conceptually.
+Authorship registry,
+AXM IDs, consent
+records. But no C2PA
+and not
+consumer-facing.
+
+Enforceme
+nt
+
+Confirmed strong.
+Automated takedowns, 95%
+success rate claim, platform
+partnerships with
+TikTok/Meta/Pinterest for
+expedited removal.
+
+Claimed. Instant takedown
+protocols marketed.
+Unverified mechanism and
+capacity.
+
+Indirect. Consent
+governance and
+licensing rules but no
+takedown automation.
+
+Monetizatio
+n
+
+Minimal. Primarily a
+protection product. Some
+
+Claimed. Automatic royalty
+collection and licensing via
+
+Strong conceptually.
+Licensing, royalty
+routing, cultural
+
+a
+d
+j
+a
+c
+e
+n
+t lic
+e
+n
+sin
+g la
+n
+g
+u
+a
+g
+e
+
+e
+xis
+t
+s. s
+m
+a
+r
+t
+c
+o
+n
+t
+r
+a
+c
+t
+s. M
+a
+r
+k
+e
+tin
+g
+
+o
+nly, n
+o
+d
+e
+t
+ails
+fo
+u
+n
+d. s
+o
+v
+e
+r
+eig
+n
+a
+s
+s
+e
+t
+s
+
+f
+r
+a
+m
+e
+w
+o
+r
+k. Pilo
+t
+-
+s
+t
+a
+g
+e.
+
+Voice: The Industry-Wide Gap
+Voice protection is the weakest area across all competitors and across the available tooling
+landscape. This deserves specific attention because it directly impacts how we scope the beta.
+
+What Exists Today
+• Speaker verification / voice matching: Tools like Resemblyzer (open source) and Pindrop
+can compare a voice sample against a reference voiceprint and determine if it is the same
+speaker. This is useful for detecting if someone is using a creator’s actual voice recordings.
+• AI voice / deepfake detection: Resemble AI offers a deepfake audio detector. Eleven Labs
+has a voice detection classifier. These can classify whether audio is AI-generated versus real.
+This matters for the scenario where someone clones a creator’s voice to make new content
+(like an AI-generated song using a real artist’s voice).
+
+What Does Not Exist
+• There is no PimEyes equivalent for voice. There is no tool that crawls the internet and
+finds every instance of a specific voice. Face search has mature API options; voice search at
+internet scale does not.
+• Even Loti’s voice protection is opaque. They collect audio clips during onboarding and
+market voice recognition, but the actual technical mechanism is not documented anywhere
+publicly.
+
+Recommendation for Beta
+Focus the beta on face and image detection where the APIs are mature and proven. Voice should be
+scoped as a registration and verification feature (creator registers their voiceprint as a
+proof-of-ownership record) rather than an active scanning feature. Full voice detection can be
+phased in as the tooling matures.
+
+Regulatory Landscape
+The legal environment is moving in our direction across multiple jurisdictions. This directly supports
+our compliance-first positioning and creates near-term demand for the infrastructure we are building.
+
+Legislation Status What It Does Whair Implication
+Tennessee
+ELVIS Act
+
+Signed March
+2024, effective
+July 1, 2024
+
+Protects artists from
+unauthorized AI voice replication
+and audio deepfakes. Expands
+personal rights to explicitly
+include voice.
+
+Establishes that
+consent-based voice and
+likeness use is now explicit
+statutory policy.
+
+California AB
+1836
+
+Chaptered
+September 2024,
+
+Addresses use of digital replicas
+of likeness.
+
+California is the largest
+creator market in the US.
+
+effective January
+1, 2026
+
+Enforcement infrastructure
+becomes necessary.
+
+NO FAKES
+Act
+
+Reintroduced
+April 2025,
+referred to
+Senate Judiciary
+
+Would create a federal right
+against unauthorized
+AI-generated digital replicas of
+voice and likeness, with
+notice-and-takedown
+frameworks.
+
+If passed, creates
+federal-level demand for
+exactly what Whair builds:
+proof of ownership, consent
+documentation, and
+enforcement workflows.
+
+New York
+(Dec 2025)
+
+Two laws signed
+December 11,
+2025
+
+One requires disclosure for
+AI-generated synthetic
+performers in advertising
+(effective June 2026). The other
+expands post-mortem publicity
+rights to cover digital replicas.
+
+Adds another major state to
+the compliance landscape.
+
+EU AI Act Published as
+Regulation
+2024/1689
+
+Includes requirements to label
+AI-generated content. Interacts
+with Digital Services Act
+obligations.
+
+A product that can verify
+provenance and help
+platforms meet labeling
+requirements becomes
+more valuable as this
+transitions from best
+practice to obligation.
+
+Take It Down
+Act
+
+Passed by
+Congress 2025
+
+Targets nonconsensual intimate
+imagery including AI deepfake
+nudes. Requires platforms to
+remove content within a fixed
+time after report.
+
+Creates platform-side
+urgency for fast, compliant
+removal workflows.
+
+The pattern is clear: more explicit rights in digital replicas, faster platform compliance obligations, and
+enforcement infrastructure becoming non-negotiable. Whair should assume a near-term world where
+proof, notice, and speed are competitive advantages.
+
+Platform Enforcement Pathways
+Each major platform has specific reporting mechanisms that our enforcement workflows need to
+integrate with. Below are the confirmed entry points:
+
+Platform Enforcement Hooks Notes
+YouTube Copyright removal request via YouTube
+Studio. Separate process for requesting
+removal of AI-generated/synthetic content
+simulating a person (launched July 2024).
+Likeness management technology pilot
+expanding.
+
+YouTube supports the NO FAKES
+Act and is actively building
+likeness-specific tools.
+
+Instagram Dedicated copyright report form. Separate
+impersonation account report form.
+
+Two separate workflows
+depending on infringement type.
+
+TikTok Copyright infringement reporting form.
+Separate reporting path for
+deepfakes/synthetic media/manipulated media
+under misinformation category. Intellectual
+Property Protection Center for e-commerce.
+
+Multiple reporting pathways
+depending on content type.
+
+X / Twitter Authenticity policy prohibits certain misleading
+synthetic or manipulated media. May label
+such content.
+
+Policy exists but enforcement
+mechanism details are less clear
+than other platforms.
+
+Meta /
+Facebook
+
+AI labeling approach described in April 2024
+policy post. Manipulated media policy
+originally written around 2020 with narrower
+focus.
+
+Policy is evolving. Labeling
+infrastructure is being built out.
+
+For the beta enforcement workflow, we should build platform-specific routing that maps each incident
+to the correct reporting mechanism and pre-fills as much of the submission as possible. The
+evidence packet (URL, screenshot, timestamp, hash, provenance record) should be structured to
+satisfy both privacy/impersonation rules and copyright/DMCA routes depending on what applies.
+
+Detection Tools Landscape
+Beyond the APIs listed in the sprint brief, here is additional context on the broader detection tooling
+available:
+
+Reverse Image / Face Search
+• TinEye API: Commercial reverse image search with published pricing. Starter at $200/5,000
+searches, Basic at $300/10,000, Corporate at $1,000/50,000. Good for finding where a
+specific image appears online (near-duplicate matching), but it is not a face-embedding
+engine. It matches the image itself, not the person’s face across different photos.
+
+• Google Cloud Vision Web Detection: Returns web entities and pages with matching
+images. Useful as a lead generator for where an image appears online. Not a face recognition
+system on its own.
+• PimEyes: Powerful consumer face search tool, but no confirmed public developer API for
+SaaS embedding was found. Key gating factors for Whair would be contractual embedding
+rights, biometric data processing terms, and jurisdictional compliance. Requires explicit
+vendor agreement.
+• Bing Visual Search: Risk flag. Microsoft’s Bing Search APIs were reported decommissioned
+for many developers as of August 2025. Do not build core logic around this.
+
+Recommended Detection Approach for Beta
+Start with a combination of AWS Rekognition for face matching (user-submitted URLs and uploaded
+media) and TinEye for web occurrence discovery. Use Cloud Vision Web Detection as an optional
+secondary signal. Build your own face embedding pipeline using open-source models (ArcFace
+family) with Weaviate as the vector store, which is exactly the architecture Loti validated at scale.
+This lets us start with vendor APIs for speed while building toward our own infrastructure.
+
+Market Context
+• Deepfake AI market estimated at approximately $764.8M in 2024, growing to approximately
+$1.05B in 2025 (Grand View Research).
+• Online brand protection software market estimated at approximately $2.16B in 2023 and
+growing (MarketResearchFuture).
+• VC commentary frames deepfake detection as a growing security category with room for new
+entrants, expected to become part of enterprise security stacks.
+• The Content Authenticity Initiative (C2PA ecosystem) now has 5,000+ members, making
+provenance tooling a growing distribution-layer primitive for platforms.
+
+What Feels Obtainable
+The beta goal structure you laid out is the right one. Verification as the excellent pillar, Detection and
+Enforcement as demo-ready, Monetization as conceptual. Here is why this is obtainable and how I
+would approach the 30-day sprint:
+
+Verification (Excellent)
+This is our fastest, cheapest, and most differentiated build. The C2PA SDK is open source and
+supports images and video. We can ship a creator enrollment flow (canonical assets tied to identity
+with signed registration records), a verified content export feature (creators generate C2PA-signed
+images and video for official releases), and a provenance viewer (upload any asset and see whether
+it has provenance metadata or not). YouTube’s adoption of C2PA-based labels gives us a real
+ecosystem adoption story to tell anchors. None of our competitors are doing this.
+
+Detection (Demo-Ready)
+Scoped as targeted discovery rather than internet-scale crawling. Creator enrolls with a face
+reference set (5-20 images). Users can submit suspected misuse URLs for face matching, and we
+run scheduled monitoring on a small set of creator-provided handles and pages. Incidents are stored
+with URLs, screenshots, match scores, timestamps, and hashes for evidence packaging. AWS
+Rekognition handles face detection and comparison within the free tier at beta volume. TinEye
+handles web occurrence lookups at $200/month for 5,000 searches.
+
+Enforcement (Demo-Ready)
+Semi-manual with a clear workflow. Each incident gets an action center: generate a takedown packet
+(URLs, screenshots, timestamps, hashes, statement of rights, provenance evidence), route to the
+correct platform reporting form with pre-filled information where possible, and track status (submitted,
+acknowledged, removed, denied). We integrate with YouTube, Instagram, TikTok, and X reporting
+entry points. No major API costs. Enterprise takedown vendors like Red Points and BrandShield are
+all quote-based enterprise sales, so we build our own workflow engine for now and consider
+partnerships later once we validate demand.
+
+Monetization (Conceptual)
+Present in the UI as a licensing decision flow. When a detection is found, the creator can choose to
+authorize it with a price or request removal. If authorized, a basic Stripe Connect payment flow
+handles the transaction. This does not need to be a full marketplace at beta, it just needs to show
+that the loop closes: detect, verify, enforce or monetize. Stripe Connect is pay-as-you-go with
+negligible costs at beta volume.
+
+Things to Flag
+
+A few things worth discussing before we start building:
+• Biometric data handling. We are storing face images and potentially voice samples. This
+has real privacy and security implications even at beta. We need to be intentional about
+encryption, storage architecture (store embeddings not raw media wherever possible), and
+deletion semantics.
+• Metadata stripping. Platforms and screenshots can strip C2PA metadata. This is a known
+ecosystem issue. Our verification story needs to account for the fact that provenance data
+does not always survive distribution. The provenance viewer inside Whair becomes the
+verification point of record.
+• Voice scope for beta. I recommend scoping voice as a registration and verification feature at
+beta (creator registers voiceprint as proof of ownership) and phasing in active voice scanning
+later as the tooling matures. This is an honest position and no competitor has solved it either.
+• UI alignment. Before building, we should align on the exact feature set for each pillar so the
+UI reflects what is actually shipping in the beta versus what comes later.

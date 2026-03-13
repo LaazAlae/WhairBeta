@@ -1,0 +1,584 @@
+# Whair Beta Sprint Prep Deep Research Report
+
+## Landscape framing and key takeaways
+
+Whair is entering a fast-moving “digital likeness protection” market where most visible competitors are **operationally oriented**: they promise to (1) find misuses across the open internet and (2) run takedowns at scale, often through creator-facing dashboards and managed enforcement services. Loti AI explicitly markets itself as having moved from “celebrity-only” protection to “everyone,” positioning its product as an internet-wide scanning + automated takedown workflow. citeturn20view2turn3view0
+
+Across your three named competitors, the biggest strategic pattern is that **Detection + Enforcement** are clear, concrete and heavily marketed, while **Verification (proof-of-origin / provenance)** is mostly absent from the “creator protection” products and appears instead in infrastructure-first companies like AXM (authorship registry, consent, licensing). citeturn3view0turn15view0turn15view2
+
+That makes your “verification-first infrastructure” hypothesis plausible, but with an important nuance: the open provenance ecosystem (C2PA / Content Credentials) is real and accelerating; major platforms have begun limited adoption experiments (for example, YouTube’s early C2PA-based authenticity labeling work). citeturn26news39turn26search0turn26search2
+
+## Competitor deep dives
+
+### Helos AI
+
+#### What the product appears to do
+
+Helos AI’s public materials describe a “real-time impersonation defense” for agents, managers, IP attorneys, and brand teams, centered on **continuous scanning** and **rapid enforcement** from a single dashboard. The website claims it detects unauthorized uses of face, voice, and name and “responds in real time,” with “instant takedown protocols,” evidence bundles, and “monetize it automatically” via licensing and royalties. citeturn8view0
+
+Helos also claims it produces “timestamped, source-verifiable evidence including original URLs, content hashes, screenshots, and historical change logs,” positioning that output as “chain of custody” support for legal review and enforcement documentation. citeturn8view0
+
+A separate positioning thread appears on its LinkedIn “About,” which emphasizes **cryptographic registration** of “Natural Rights” to voice/likeness in a “military grade secure database,” and **licensing via smart contracts**. citeturn14view0
+
+#### Core workflow and user journey
+
+From the public site copy, the implied workflow is:
+
+1) **Book a demo / walkthrough** (Helos prominently funnels to demos rather than self-serve onboarding). citeturn8view0  
+2) **Set up monitored “talent”** (site UI mockups show “Your Talent,” alerts, and takedowns submitted). citeturn8view0  
+3) **Receive real-time alerts** when suspected impersonation content appears. citeturn8view0  
+4) **Trigger takedown workflows** and generate evidence bundles and documentation. citeturn8view0  
+5) **(Claimed) monetize** by licensing likeness and collecting royalties. citeturn8view0  
+
+The company also exposes a logged-in “Reports” area that lists downloadable reports, suggesting a dashboard/reporting product exists, but the public content available there does not show the contents of reports. citeturn11view0
+
+#### Platforms and interfaces
+
+Helos describes “one unified dashboard” as the control plane. citeturn8view0  
+The Terms of Service define “Services” broadly (website plus any services/tools/apps), but do not confirm public mobile apps or an API. citeturn8view1
+
+#### Tech stack, APIs, and integrations (publicly evidenced vs unknown)
+
+**Confirmed from public sources:** Helos marketing references “content hashes,” “timestamps,” “screenshots,” and “historical change logs,” which implies a forensics/evidence pipeline, but no vendor APIs (AWS, Google, etc.) are named. citeturn8view0
+
+**Not found publicly (no explicit confirmation):**
+
+- Specific model providers (e.g., AWS Rekognition, Google Vision)  
+- C2PA / Content Credentials adoption  
+- Explicit platform integrations list (beyond broad “across platforms” language)  
+
+Helos’ “Third-Party Services” clause confirms they may link/integrate with third parties but does not enumerate them. citeturn8view1
+
+#### Mapping to Whair’s four pillars
+
+| Pillar | What Helos claims | Evidence strength |
+|---|---|---|
+| Detection | “Real-time scanning” for impersonations/clones/deepfakes; monitors unauthorized name/image/likeness across social, e-commerce, video platforms | Stated directly; platforms not enumerated. citeturn8view0 |
+| Verification | “Forensic-grade evidence,” hashes, timestamps, chain-of-custody framing | Evidence-generation is clear; provenance standards (C2PA) not mentioned. citeturn8view0turn14view0 |
+| Enforcement | “Instant takedown protocols,” DMCA + platform reports + cease-and-desist documentation support | Stated directly, but depth of automation is unclear. citeturn8view0 |
+| Monetization | “Licenses client likeness and collects royalties automatically” | Claimed; mechanics not described publicly. citeturn8view0turn14view0 |
+
+#### Business model, pricing, and target customer
+
+No public pricing tiers were found on the Helos website. The heavy “book a demo” orientation strongly suggests quote-based pricing. citeturn8view0
+
+Target customers are explicit: IP attorneys, agents/managers, brand teams protecting public figures and influencers. citeturn8view0
+
+#### Traction and positioning signals
+
+- Helos lists a team on the website, but the team page itself was not reliably retrievable; the homepage includes names and roles. citeturn8view0turn22search2  
+- LinkedIn lists the company as founded in 2023, 2–10 employees, and a headquarters in Deerfield Beach. citeturn14view0  
+- No funding announcements, major partnerships, or app store listings were found in accessible sources during this run.
+
+#### Messaging
+
+Helos’ messaging is “digital bodyguard,” “zero tolerance,” and “responds in real time,” framed as **crisis prevention** and **revenue protection** for professional representatives of talent. citeturn8view0
+
+---
+
+### Loti AI
+
+#### What the product does
+
+Loti AI positions itself as an internet-scale “face and voice protection” system that:
+
+- scans the “public internet” daily for deepfakes, impersonations, adult content, and other unauthorized likeness content, citeturn20view2  
+- supports optional “automate takedowns or handle them individually,” citeturn20view2  
+- claims a “95% takedown success rate within just 17 hours” (press release language), citeturn20view2  
+- offers both web signup and mobile apps, including an onboarding “live identity check.” citeturn20view2turn6view0
+
+The consumer app store listing emphasizes: “AI-powered face search,” “voice recognition & protection,” “effortless takedown requests” with “automated legal templates,” “real-time monitoring” alerts, and “privacy & security first.” citeturn6view0turn6view1
+
+The “Everyone” product page describes “Watchtower” as a proactive alerting/monitoring system (daily monitoring even for free users), with “40+ proprietary models” and “50,000+ servers” used to scan across the open internet, and asserts it supports face, text, logo, and “visual similarities” scanning (multi-signal matching). citeturn3view0
+
+#### Core workflow and user journey
+
+The most explicit onboarding flow appears in Loti press and app listings:
+
+1) Sign up on web or download the mobile app. citeturn20view2turn6view0  
+2) Complete a “live identity check.” citeturn20view2  
+3) Start daily monitoring (“Watchtower”) for unauthorized content. citeturn3view0turn20view2  
+4) Review detections and submit takedown requests (automated legal templates; user can automate or do case-by-case). citeturn6view0turn20view2  
+
+#### Platforms and interfaces
+
+Loti has:
+
+- iOS app listing, with in-app purchase pricing visible. citeturn6view0  
+- Google Play listing (shows availability and description; “10+ downloads” in the listing snapshot). citeturn6view1  
+- A consumer web presence and “sign-up” URLs referenced in press. citeturn20view2turn20view0  
+
+The web app at `app.goloti.com` was not readable via this browsing run (likely JS/blocked), so the exact feature set of the web dashboard could not be verified directly. citeturn7view0
+
+#### Tech stack, APIs, and integrations
+
+**Confirmed claims (public):**
+
+- Loti states it uses “voice, facial recognition, and deepfake detection.” citeturn20view0turn20view2  
+- Its “Everyone” page claims “40+ proprietary models” and “50,000+ servers,” implying large-scale compute and custom ML pipelines. citeturn3view0  
+
+**Inference (not confirmed):** The scale claims strongly imply distributed crawling + embedding search + classifier pipelines; however, no explicit mention of specific cloud providers, C2PA, or named model families was found in the sources accessed.
+
+Integrations with major talent agencies are claimed as “strategic partnerships” in Loti’s Series A announcement (WME and CAA specifically). citeturn20view0
+
+#### Mapping to Whair’s four pillars
+
+| Pillar | Loti capability | Evidence strength |
+|---|---|---|
+| Detection | Face search; voice recognition/protection; deepfake detection; scanning the public internet daily; multi-signal scanning (face/text/logo/visual similarity); large-scale infrastructure claims | Strong marketing + press + app store. citeturn3view0turn20view2turn6view0 |
+| Verification | Identity verification at onboarding (“live identity check”); no clear proof-of-origin / provenance standard emphasis found | Onboarding verification is clear; content provenance is not. citeturn20view2 |
+| Enforcement | Takedown requests with automated legal templates; automation optional; claimed 95% takedown effectiveness within ~17 hours | Strongly claimed in press and app copy. citeturn20view2turn6view0turn20view1 |
+| Monetization | Primarily a protection product; press notes “capture and control their AI likeness” and “streamline enforcement of contracts using their likeness,” and consumer “rediscover old photos/videos” | Some adjacent licensing language exists; a true creator licensing marketplace is not clearly described publicly. citeturn20view0turn20view3 |
+
+#### Business model and pricing
+
+**Consumer pricing (confirmed via iOS):** monthly $25; yearly $200 (in-app purchases). citeturn6view0  
+Loti also markets a free membership that includes daily monitoring, plus premium for faster action in a “digital identity crisis.” citeturn20view2turn3view0
+
+**Enterprise / high-profile tier:** Loti clearly serves public figures and enterprise partners, but pricing for those engagements is not posted publicly in the accessible sources (implied enterprise sales motion). citeturn20view0turn3view0
+
+Target customers span: everyday consumers, public figures (celebrities/artists/athletes/politicians), and brands. citeturn20view0turn20view2turn6view0
+
+#### Traction and market position
+
+Funding and backers are unusually well documented:
+
+- $16.2M Series A led by entity["company","Khosla Ventures","venture capital firm"] with other investors listed, and a prior seed of $6.65M (2024). citeturn20view0  
+- Loti states it will “deepen strategic partnerships” with entity["organization","WME","talent agency"] and entity["organization","CAA","talent agency"]. citeturn20view0  
+- Partnerships with entity["organization","CMG Worldwide","ip management firm | los angeles, ca, us"] (estates and iconic talent) are publicly announced; the release lists a large roster of estates/figures under protection. citeturn20view1  
+- Press coverage describes Loti as detecting individuals from partial faces (example: “15 percent or less of their face” claim in an industry article), indicating sophistication in unconstrained imagery. citeturn20view3
+
+App store sentiment: Apple listing indicates insufficient ratings to display an overview at the time of capture. citeturn6view0
+
+#### Messaging
+
+Loti’s language is strongly consumer-trust oriented: “Your face and voice belong to you,” “celebrity-level privacy protection, now for everyone,” and an outcome goal of “zero images… you haven’t approved.” citeturn6view0turn20view2
+
+---
+
+### AXM
+
+#### What the product does
+
+AXM positions itself as **“sovereign infrastructure”** for “registering, governing, licensing, and routing cultural IP in the AI era,” built for creators, estates, and cultural institutions to “govern authorship.” citeturn15view0turn15view2
+
+AXM’s materials emphasize:
+
+- “Digital Public Infrastructure” framing with “open standards,” “sovereign-ready credentials,” and “exportable records.” citeturn15view0turn15view2  
+- An authorship “identity layer,” stable identifiers (“AXM IDs”), “consent registries,” and “fallback licensing mechanisms.” citeturn15view2  
+- “Licensing + payouts” and “automate royalty flows to beneficiaries.” citeturn15view0turn15view2  
+- “Rights + provenance” in a “living record.” citeturn15view0  
+
+The AXM whitepaper preview (PDF) frames “authorship as infrastructure,” compares its role to national identity DPI systems, and explicitly centers consent and compensation for voices, stories, and archives used by AI systems. citeturn16view1turn17view0turn15view2
+
+#### Core workflow and user journey
+
+AXM is not presented as a self-serve consumer app; it appears to be pilots/partnerships:
+
+1) “Bring your catalog or archive,” propose a pilot, request a demo. citeturn15view0turn18view3  
+2) Register works / establish identifiers, rights/provenance records, consent policies and licensing rules (implied “modules—registry, consent, fallback protections”). citeturn16view1turn15view2  
+3) Use dashboards for usage/engagement visibility and royalty routing (claimed “live dashboards” + “royalty flows”). citeturn15view0turn15view2  
+
+#### Platforms and interfaces
+
+AXM presents a website and pilots/demos. No mobile apps, browser extensions, or APIs are described publicly in the sources accessed. citeturn15view0turn18view3
+
+#### Tech stack, APIs, and integrations
+
+Public documents describe a **protocol-based architecture** and “stable identifiers,” consent registries, and interoperability, but do not name specific cloud services or standards like C2PA. citeturn15view2turn15view0
+
+AXM states it joined entity["company","NVIDIA Inception","startup program"]. citeturn18view1  
+AXM also states it was selected by entity["organization","World Intellectual Property Organization","un agency"] for a deep tech ventures program. citeturn19view1  
+AXM states it joined the entity["organization","Creative Commons","open licensing nonprofit"] Open Culture Platform. citeturn19view3
+
+#### Mapping to Whair’s four pillars
+
+| Pillar | AXM capability | Evidence strength |
+|---|---|---|
+| Detection | Not a primary focus; no public claims of internet-scale scanning for misuse | No evidence found. citeturn15view0turn15view2 |
+| Verification | Strong: registration, identifiers, provenance records, “identity layer for authorship,” exportable records, governance | Strong across site + whitepaper. citeturn15view0turn15view2turn16view1 |
+| Enforcement | Indirect: consent governance + licensing mechanisms; no explicit takedown automation described | Some claims about enforceability; not equivalent to DMCA automation. citeturn15view2turn15view0 |
+| Monetization | Strong: licensing + payouts; royalty routing; “Cultural Sovereign Assets” framing | Stated directly. citeturn15view0turn15view2turn16view1 |
+
+#### Business model and pricing
+
+AXM does not publish pricing; it is presented as pilots, custom partnerships, and infrastructure collaborations. citeturn15view0turn18view3
+
+#### Traction and market position
+
+AXM claims active pilots with creators/estates/institutions. citeturn15view0turn15view2  
+AXM states it “indexed more than $50 million in cultural assets” on its beta platform (company-authored claim, not independently verified in this run). citeturn18view2  
+AXM also states it won a UNIDO digital innovation award track (company-authored blog claim). citeturn18view0
+
+## Competitive gap analysis for Whair
+
+### Where Whair is most likely ahead
+
+#### Verification as a first-class product surface
+
+Among these competitors, **none** appear to lead with C2PA / Content Credentials as a primary creator protection feature:
+
+- Helos focuses on scanning + takedown + evidence bundles, but does not mention C2PA or standardized proof-of-origin metadata. citeturn8view0turn14view0  
+- Loti is detection/enforcement heavy; its verification is mainly onboarding (“live identity check”), not content provenance. citeturn20view2turn6view0  
+- AXM is heavily about authorship/rights/provenance infrastructure, but its public materials do not mention C2PA specifically. citeturn15view0turn15view2  
+
+This is the strongest “white space” signal for Whair: making **verification/provenance** actionable for creators and platforms, not just as a passive metadata standard.
+
+The broader ecosystem supports the bet: C2PA and Content Credentials are standardized provenance tech; mainstream platforms have begun partial adoption (for example, YouTube’s early “captured with a camera” label based on C2PA). citeturn26search0turn26search2turn26news39
+
+### Where Whair is likely behind today
+
+#### Operational scale and enforcement muscle
+
+Loti publicly claims large-scale infrastructure (“50,000+ servers,” “40+ proprietary models”) and high takedown performance speed. citeturn3view0turn20view2  
+Helos markets “real-time” response and specialized workflows for professional representatives (agents/lawyers). citeturn8view0
+
+In practice, a beta user comparing Whair to Loti/Helos will expect:
+
+- A fast onboarding flow that creates a robust biometric “reference” (Loti’s “live identity check” is a strong expectation-setter). citeturn20view2  
+- A dashboard that consolidates detections + takedown actions + status history (both Helos and Loti center a “single interface” idea). citeturn8view0turn6view0  
+- Concrete, repeatable enforcement workflows and retained evidence bundles. citeturn8view0turn6view0  
+
+### Table-stakes and “wow” features to account for in beta
+
+**Table-stakes (beta must-have if you want credibility vs Loti/Helos):**
+
+- **Identity onboarding** that is more than “upload a selfie” (at minimum: multi-photo capture + liveness check or manual verification) because competitors explicitly market a “live identity check.” citeturn20view2  
+- **Monitoring + alerting loop** (daily scans or near-real-time alerts). citeturn3view0turn8view0  
+- **Case management**: list of incidents with URLs, timestamps, screenshots, and status to support takedowns and disputes. citeturn8view0turn6view0  
+- **Takedown initiation tooling**: templated notices and workflows. citeturn6view0turn27search0turn27search1  
+
+**“Wow” features competitors signal (nice-to-have, but strategically important):**
+
+- **Internet-scale matching in unconstrained media** (partial face detection in video/low-visibility contexts is highlighted in coverage of Loti). citeturn20view3  
+- **Evidence-grade provenance + historical record** messaging (Helos’ “content hashes” + “historical change logs”). citeturn8view0  
+- **Licensing/royalty routing** (AXM’s “royalty flows” and Helos’ “collect royalties automatically”). citeturn15view0turn8view0  
+
+## Technology and API research for beta build
+
+### Detection pillar
+
+#### entity["company","Amazon Web Services","cloud provider"] Rekognition capabilities, pricing, and gotchas
+
+**Core face APIs and constraints**
+
+The Rekognition `DetectFaces` API detects faces and returns bounding boxes and attributes; it is most effective on frontal faces and can return up to 100 faces per image. citeturn23search6  
+The `CompareFaces` API compares a source face against faces in a target image and returns similarity matches. citeturn23search2turn23search10
+
+AWS documents minimum face-size guidance (faces as small as 50×50 pixels in up to 1920×1080 images) and notes accuracy improves with larger faces and good lighting. citeturn23search36
+
+**Pricing (as shown in AWS materials)**
+
+AWS has described its Image API pricing as tiered per image, with a free tier and per-image rates by volume for grouped APIs (including CompareFaces and DetectFaces) in its pricing update materials. citeturn24search2turn24search27
+
+For video, AWS pricing examples show:
+
+- Rekognition **Streaming Video Events** label detection at **$0.00817 per minute processed** (example pricing shown). citeturn25view0turn25view2  
+- Rekognition **Stored Video Analysis** label detection at **$0.10 per minute**, shot detection at **$0.05 per minute**, and content moderation at **$0.10 per minute** (example pricing shown). citeturn25view0  
+
+**Quotas and beta-scale feasibility**
+
+AWS publishes default TPS quotas by region; for example, DetectFaces/CompareFaces can be 100 TPS in some regions (default), with quota increase requests possible. citeturn25view3
+
+**Beta gotchas**
+
+- Rekognition uses EXIF orientation for JPEGs (can affect bounding boxes) and does not apply the same correction to PNGs or JPGs without orientation metadata, which can cause mismatch issues in downstream cropping pipelines. citeturn23search2turn23search6  
+- Consider bounding-box normalization and deterministic preprocessing to avoid “same image, different orientation” artifacts. citeturn23search2  
+
+#### entity["company","Google Cloud","cloud provider"] Vision API comparison points
+
+Cloud Vision’s pricing is request/feature based: each feature applied to an image is billed separately, with the first 1,000 units/month free; for example, “Facial Detection” is priced per 1,000 units with tiered rates, and “Web Detection” is priced higher than standard labeling. citeturn25view1turn24search5
+
+Cloud Vision **Web Detection** explicitly “detects Web references to an image,” which is the closest “reverse image search-like” capability in first-party Google tooling (though it is not equivalent to consumer Google reverse image search). citeturn24search5
+
+**Pricing snapshot (selected features per 1,000 units)**
+
+From Google’s pricing table:
+
+- Label Detection: free (first 1,000), then $1.50, then $1.00. citeturn25view1  
+- Facial Detection: free (first 1,000), then $1.50, then $0.60. citeturn25view1  
+- Web Detection: free (first 1,000), then $3.50, then “contact Google” beyond that tier (as shown). citeturn25view1  
+
+**Practical takeaway for Whair beta**
+
+- If your beta detection need is “known user face match” inside user-submitted images/videos, Rekognition’s face collections + compare/search model may reduce time-to-first-implementation. citeturn23search10turn25view3  
+- If your detection need is “open web discovery,” Cloud Vision Web Detection can act as a programmatic foothold for “where else does this image appear online,” but coverage and recall will vary. citeturn24search5turn25view1  
+
+#### Deepfake detection APIs, reverse image search APIs, and voice fingerprinting status in this run
+
+Within the remaining tool budget for this run, I did not retrieve primary documentation for dedicated third-party deepfake detection APIs (e.g., Sensity) or voice anti-spoof vendors (e.g., Pindrop). As a result, I am not summarizing pricing/accuracy claims for those vendors here.
+
+For “reverse image search,” the only programmatic capability verified in-scope here is Cloud Vision Web Detection. citeturn24search5turn25view1
+
+### Verification pillar
+
+#### C2PA and Content Credentials implementation detail
+
+The C2PA initiative provides an “open technical standard” for establishing provenance and edit history (“Content Credentials”). citeturn26search15turn26search4  
+The Content Authenticity Initiative describes Content Credentials as “verifiable metadata” based on C2PA standards, containing information like who produced content, when, and what tools/edits were applied (a “nutrition label” framing). citeturn26search2turn26search19turn26search25
+
+**Spec and SDK**
+
+- The C2PA “Content Credentials” specification is published (PDF versions exist; the run retrieved a 2.1 PDF and the C2PA site also lists newer spec indexes). citeturn26search0turn26search4  
+- Open-source SDKs exist: the Rust library `c2pa-rs` can “create and sign C2PA claims and manifests.” citeturn26search1  
+- Mobile support exists (example: “C2PA Android” docs describe reading, validation, and creation, with multiple signing methods and Android Keystore/StrongBox support). citeturn26search11  
+
+**What “sign” and “verify” mean operationally**
+
+At a high level (and consistent with CAI descriptions), signing attaches cryptographically verifiable provenance information; verification checks integrity/tampering and displays metadata. citeturn26search25turn26search2  
+C2PA implementation guidance notes creating a manifest is not “lightweight” because it involves digital signatures and potentially retrieving credentials; it recommends doing it only at significant lifecycle events (create/export). citeturn26search27
+
+**Adoption signals you can weaponize in positioning**
+
+Mainstream platform adoption is still uneven, but there are tangible signals:
+
+- Reporting indicates YouTube began implementing a “captured with a camera” label based on C2PA, and only devices/tools supporting C2PA 2.1+ can generate the needed metadata for that label. citeturn26news39turn26search0  
+- Industry reporting describes broader ecosystem support (Adobe/Microsoft/Google) but limited consistent display on social platforms. citeturn26news41turn26news42  
+
+**Actionable Whair beta implication**
+
+A verification-forward beta can ship fast by offering:
+
+- A “Verified Asset” flow: creator uploads canonical headshots/voiceprints + optional authorized media; you produce signed “authorized” outputs and a verifier view (even if platforms don’t display it yet). citeturn26search1turn26search27turn26search2  
+- A “Provenance viewer” inside Whair: parse and display C2PA manifests using the SDK; treat it as a differentiator when your Detection finds matches that lack provenance. citeturn26search1turn26search2turn26search11  
+
+### Enforcement pillar
+
+#### DMCA and platform-specific reporting workflows
+
+Below are **verified** entry points from major platforms relevant to your enforcement layer. These are presented as URLs in code blocks (per system constraints), with citations in adjacent text.
+
+**entity["organization","YouTube","video platform"]**
+
+YouTube’s Help Center states the easiest way to submit copyright removal requests is through a YouTube Studio form and describes a removal request workflow. citeturn27search0
+
+```text
+YouTube copyright removal request help:
+https://support.google.com/youtube/answer/2807622?hl=en
+```
+
+**entity["organization","Instagram","social platform"]**
+
+Instagram provides a dedicated copyright report form and Help Center guidance on reporting copyright infringement. citeturn27search1turn27search7  
+Instagram also provides a specific form to report impersonation accounts. citeturn27search4
+
+```text
+Instagram copyright report form:
+https://help.instagram.com/contact/552695131608132
+
+Instagram impersonation report form:
+https://help.instagram.com/contact/636276399721841
+```
+
+**entity["organization","TikTok","social platform"]**
+
+TikTok provides a copyright infringement reporting form for user-generated content. citeturn27search5  
+TikTok also references an “Intellectual Property Protection Center” (IPPC) for e-commerce related reporting workflows. citeturn27search11turn27search22
+
+```text
+TikTok copyright infringement reporting:
+https://ipr.tiktokforbusiness.com/legal/report/Copyright
+
+TikTok ecommerce IPR / IPPC:
+https://inapp.tiktokv.com/compliance/ecommerce-ipr
+```
+
+**entity["organization","X","social platform"]**
+
+X’s public rules include a “Synthetic and Manipulated Media” policy and note labeling and restrictions. citeturn27search6
+
+```text
+X Rules:
+https://help.x.com/en/rules-and-policies/x-rules
+```
+
+#### DMCA automation / managed enforcement vendors relevant to “Enforcement pillar outsourcing”
+
+You asked specifically about Red Points / BrandShield / Corsearch. Public pricing is generally “request a quote,” but key positioning and pricing posture are visible.
+
+- entity["company","Red Points","brand protection company"] markets “unlimited takedowns” and a “tailored quote” model. citeturn28search0  
+- entity["company","BrandShield","brand protection company"] markets AI-powered monitoring + an “expert enforcement team,” covering phishing, impersonation, counterfeits, and more across web/social/marketplaces/dark web. citeturn28search1turn28search4  
+- entity["company","Corsearch","brand protection company"] positions itself as trademarks + brand protection across lifecycle (creation to online protection), but public pricing is not posted on its main site. citeturn28search8  
+
+**Validated pricing posture (what you can safely assume for beta planning):**
+
+- These providers overwhelmingly appear **enterprise sales / quote-based** rather than transparent self-serve. citeturn28search0turn28search8  
+- Third-party review sites sometimes publish price guesses, but they are explicitly disclaimed as third-party and should not be treated as authoritative inputs for financial modeling. citeturn28search12
+
+### Monetization pillar
+
+#### entity["company","Stripe","payments company"] Connect account models and integration complexity
+
+Stripe’s documentation describes three Connect account types—Standard, Express, Custom—along with differences in integration effort and dashboard access, and notes there is an additional cost for Express or Custom. citeturn29search8
+
+Stripe’s docs also describe how charges work and recommend “separate charges and transfers” in some Express/Custom scenarios. citeturn29search4
+
+```text
+Stripe Connect account types:
+https://docs.stripe.com/connect/accounts
+
+Stripe Connect charges overview:
+https://docs.stripe.com/connect/charges
+```
+
+A Stripe-hosted Connect pricing page exists (regionalized in this run), showing a per “active user per month” model and payout-related fees (numbers vary by region/currency on that page). citeturn29search12
+
+## Regulatory and legal landscape relevant to Whair
+
+### Tennessee ELVIS Act
+
+The ELVIS Act is commonly described as a Tennessee law designed to protect artists—especially musicians—from unauthorized AI voice replication and related “audio deepfakes,” and mainstream reporting describes it as the first U.S. state law of its kind, signed by Governor Bill Lee and effective July 1, 2024. citeturn29news41turn29news42turn29search10
+
+Industry coverage also frames it as expanding Tennessee’s personal rights regime to explicitly include “voice” and broaden protections beyond narrow advertising contexts (summaries vary by source). citeturn29search14turn29search26turn29search22
+
+**Positioning implication for Whair:** This supports a compliance-forward narrative: “consent-based voice and likeness use” is becoming explicit statutory policy, raising demand for infrastructure that (1) documents consent and (2) provides enforcement-ready evidence. citeturn29search26turn8view0
+
+### EU AI Act synthetic media transparency
+
+The EU AI Act is published as Regulation (EU) 2024/1689. citeturn29search15turn29search3  
+The Act text includes discussion of requirements to label AI-generated content (and explicitly notes interaction with notice-and-action obligations under the Digital Services Act), which is directionally aligned with Whair’s verification and compliance framing. citeturn29search3
+
+**Positioning implication for Whair:** A product that can attach or verify provenance signals (and help platforms/creators meet labeling expectations) becomes more valuable as “labeling AI-generated content” transitions from best practice to obligation in major jurisdictions. citeturn29search3turn26search2
+
+### US NO FAKES Act and California AB 1836 status in this run
+
+I was not able to verify the current status of the US NO FAKES Act from Congress.gov because that domain was blocked in this browsing environment. citeturn29search0  
+I also did not retrieve primary materials for California AB 1836 within the remaining tool budget. As a result, I am not asserting requirements/timelines for those items in this report.
+
+### Other emerging regulation signals
+
+India introduced major deepfake detection/labelling requirements (as reported), including aggressive timelines and references to provenance mechanisms; while not in your requested list, it is a strong indicator that “mandatory provenance / labeling” regimes are spreading globally. citeturn27news44turn27search15
+
+## Beta readiness assessment and sprint plan
+
+This section distinguishes between **confirmed external facts** (cited earlier) and **engineering estimates** (explicitly labeled).
+
+### Minimum viable beta feature set by pillar
+
+#### Detection beta MVP
+
+**Minimum viable feature set (beta demo credible vs market):**
+
+- Creator enrollment: collect a **face reference set** (5–20 images) and (optional) short voice samples. (Estimate)  
+- “Targeted discovery” detection:  
+  - **User-submitted URL scan** (user pastes a URL to a suspected misuse; you extract frames/images and run face match). (Estimate)  
+  - **Scheduled monitoring** for a small set of sources (e.g., creator-provided handles/pages) rather than the whole web. (Estimate)  
+- Incident object: store URL, screenshot/frame, match score, timestamps, and a hash for evidence packaging. citeturn8view0
+
+**Recommended APIs/tools (confirmed + pragmatic):**
+
+- AWS Rekognition `DetectFaces` + `CompareFaces` for face detection/matching. citeturn23search6turn23search2  
+- Cloud Vision Web Detection (optional) for “where else does this image appear online” signals. citeturn24search5turn25view1  
+
+**Solo dev time estimate:** 7–12 days (estimate; includes backend + basic UI + storage + queueing).
+
+**30-day cost estimate (order-of-magnitude):**  
+- Low hundreds to low thousands USD depending on scans/video minutes; Rekognition Video minutes can expand quickly. citeturn25view0turn24search2turn25view3  
+(Estimate; you should model based on expected daily scans per creator and whether video is in scope.)
+
+**Biggest technical risks / unknowns:**
+
+- False positives/negatives in unconstrained media (partial faces, heavy filters, low-res). Loti’s press coverage suggests this is a key battleground. citeturn20view3  
+- Data protection/security expectations given biometric sensitivity (no specific competitor security spec was retrieved beyond general privacy language). citeturn6view0turn8view2  
+
+#### Verification beta MVP
+
+**Minimum viable feature set:**
+
+- “Verified identity” profile: creator-controlled canonical assets (headshots + optional voice reference) with signed registration record (Whair-issued). (Estimate)  
+- “Verified content” export: allow creators to generate **C2PA-signed** images/videos for official releases (even if platform display is inconsistent). citeturn26search1turn26search27turn26news39  
+- “Verifier view” in your app: upload any asset, parse and show provenance if it exists (C2PA manifests). citeturn26search1turn26search2  
+
+**Recommended APIs/tools:**
+
+- C2PA/CAI SDKs (`c2pa-rs`, mobile libraries) based on open-source tooling. citeturn26search1turn26search11turn26search3  
+
+**Solo dev time estimate:** 6–10 days (estimate; signing service + key management + viewer).
+
+**30-day cost estimate:** minimal incremental cloud cost beyond storage + signing operations; primary “cost” is dev time + certificate/key strategy. (Estimate)  
+(Implementation guidance flags manifest creation isn’t lightweight; design to sign on export, not continuously.) citeturn26search27
+
+**Biggest technical risks / unknowns:**
+
+- Key management and trust model: which certificates you use and how verifiers trust them (ecosystem still evolving; third-party certificate products for C2PA exist). citeturn26search6turn26search22  
+- Metadata stripping and durability: industry reporting highlights that platforms and screenshots can strip or fail to display credentials consistently. citeturn26news41turn26news40  
+
+#### Enforcement beta MVP
+
+**Minimum viable feature set:**
+
+- “Action center” per incident:
+  - Generate a takedown packet: URLs, screenshots, timestamps, hashes, statement of rights, and any provenance evidence. citeturn8view0turn27search0  
+  - Link to the relevant platform reporting form and pre-fill as much as possible (where allowed). citeturn27search1turn27search5turn27search0  
+- Basic dispute/status tracking: submitted → acknowledged → removed/denied. (Estimate)
+
+**Recommended tools:**
+
+- Use official platform forms as the first implementation (YouTube/Instagram/TikTok/X entry points cited earlier). citeturn27search0turn27search1turn27search5turn27search6  
+- Consider later partnering with enterprise takedown vendors (Red Points/BrandShield/Corsearch) once you validate demand; their public positioning is enterprise/managed services. citeturn28search0turn28search1turn28search8  
+
+**Solo dev time estimate:** 5–9 days (estimate; templates + case management + PDFs + UI).
+
+**30-day cost estimate:** mostly staff time + modest storage; no major per-call API fees unless you automate crawling heavily. (Estimate)
+
+**Biggest technical risks / unknowns:**
+
+- Fraudulent takedown abuse risk: platforms can be exploited with fake requests; enforcement tooling must include strong identity verification and audit trails. citeturn27news38turn20view2  
+
+#### Monetization beta MVP
+
+**Minimum viable feature set:**
+
+- “License request” intake for detected uses: allow the creator to approve/deny and set a price. (Estimate)  
+- “Pay and get license receipt” flow: integrate payouts for creators in a marketplace-like pattern. (Estimate)  
+
+**Recommended tools:**
+
+- Stripe Connect with Standard/Express/Custom account types, depending on how much onboarding/compliance you want to own. citeturn29search8turn29search4  
+
+**Solo dev time estimate:** 6–12 days (estimate; large variance depending on account type and compliance).
+
+**30-day cost estimate:** Stripe fees + Connect fees (region-specific; see Connect pricing page). citeturn29search12turn29search8  
+
+**Biggest technical risks / unknowns:**
+
+- Compliance/KYC complexity and liability allocation (Stripe documentation shows meaningful differences in fraud/dispute liability and dashboard access across account types). citeturn29search8  
+
+### Recommended 30-day beta sprint plan
+
+**Week one: foundation + verification wedge**
+
+- Ship creator enrollment (identity profile, asset storage, audit log). (Estimate)  
+- Implement C2PA verify viewer inside Whair (upload → parse → show provenance). citeturn26search1turn26search2  
+- Define your evidence bundle schema (URLs, hashes, timestamps, screenshots) aligned with takedown needs. citeturn8view0turn27search0  
+
+**Week two: targeted detection**
+
+- Build face-matching pipeline on user-submitted URLs and uploaded media (frame extraction + Rekognition face detection/compare). citeturn23search6turn23search2  
+- Add basic alerting (email/push) and incident queue. (Estimate)  
+- Add Cloud Vision Web Detection optionally for “web references” to known images (tunable, can be feature-flagged). citeturn24search5turn25view1  
+
+**Week three: enforcement workflow**
+
+- Build case management UI: incident list → detail view → “file takedown” action. (Estimate)  
+- Add platform form routing and pre-filled templates for YouTube/Instagram/TikTok/X. citeturn27search0turn27search1turn27search5turn27search6  
+- Generate “evidence packet” exports (PDF/ZIP). citeturn8view0  
+
+**Week four: monetization stub + polish**
+
+- Implement a minimal licensing decision flow (approve/deny) and (optionally) Stripe Connect payments, starting with the account type that minimizes engineering (usually Standard/Express, per Stripe’s integration effort table). citeturn29search8  
+- Hardening: logging, rate limits, privacy improvements, and a lightweight security review focused on biometric data flows. (Estimate)  
+- Prepare demo scripts and a “creator story” narrative: “detect → verify provenance/no provenance → enforce/takedown or license.” citeturn26search2turn8view0turn6view0  
+
+### Prioritized build order
+
+1) Verification viewer + evidence model (differentiation + minimal operational cost). citeturn26search1turn8view0  
+2) Targeted detection on user-submitted URLs (fastest time-to-value without building a crawler). (Estimate)  
+3) Enforcement templates + case tracking (turn detections into outcomes). citeturn27search0turn27search1turn27search5  
+4) Expansion: scheduled monitoring sources; broader crawling; monetization payments.
+
+### Shortcuts and leverage points
+
+- Use open-source C2PA tooling (`c2pa-rs`, mobile SDKs) rather than designing a bespoke provenance system. citeturn26search1turn26search11  
+- Treat Web Detection as an optional “assist signal” rather than core—feature flag it until you understand recall/precision for likeness misuse. citeturn24search5turn25view1  
+- Start enforcement with official platform forms rather than building fragile unofficial automation; then add managed providers later if needed. citeturn27search0turn28search0turn28search1
