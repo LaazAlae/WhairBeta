@@ -48,7 +48,8 @@ export function buildCspHeader(): string {
       "'self'",
       "blob:",
       "data:",
-      `https://${supabaseDomain}`,
+      "https:",
+      "http:",
     ],
     "font-src": [
       "'self'",

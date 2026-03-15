@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Whair Beta</title>
+<style>
+  @page { margin: 0.75in; size: letter; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1a1a1a; line-height: 1.7; max-width: 820px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Cover */
+  .cover { text-align: center; padding: 70px 0 50px; page-break-after: always; }
+  .cover h1 { font-size: 48px; font-weight: 700; letter-spacing: -1.5px; color: #111; }
+  .cover .subtitle { font-size: 18px; color: #555; margin-top: 6px; }
+  .cover .meta { margin-top: 36px; font-size: 13px; color: #999; line-height: 2; }
+  .cover .hero-box { margin-top: 50px; padding: 24px 32px; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; font-size: 15px; line-height: 1.7; text-align: left; }
+  .cover .hero-box strong { color: #d1fae5; }
+
+  /* Sections */
+  h2 { font-size: 22px; font-weight: 700; color: #059669; margin-top: 52px; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #059669; page-break-after: avoid; }
+  h3 { font-size: 17px; font-weight: 600; color: #1f2937; margin-top: 28px; margin-bottom: 10px; page-break-after: avoid; }
+  p { margin-bottom: 14px; font-size: 14.5px; }
+
+  /* Lists */
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 8px; font-size: 14.5px; }
+
+  /* Callout boxes */
+  .box { padding: 18px 22px; border-radius: 10px; margin: 18px 0; font-size: 14px; line-height: 1.65; }
+  .box-green { background: #ecfdf5; border-left: 4px solid #059669; }
+  .box-blue { background: #eff6ff; border-left: 4px solid #3b82f6; }
+  .box-amber { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .box-gray { background: #f4f5f7; border-left: 4px solid #9ca3af; }
+  .box-dark { background: #111827; border-left: 4px solid #059669; color: #e5e7eb; }
+  .box-dark strong { color: #34d399; }
+  .box-dark code { background: #1f2937; padding: 2px 8px; border-radius: 4px; color: #34d399; font-size: 13px; }
+  .box p { margin-bottom: 6px; }
+  .box p:last-child { margin-bottom: 0; }
+
+  /* Steps */
+  .step { display: flex; gap: 14px; margin-bottom: 18px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #059669; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .step-content { flex: 1; }
+  .step-content p { margin-bottom: 4px; }
+
+  /* Scenario blocks */
+  .scenario { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 22px; margin: 20px 0; page-break-inside: avoid; }
+  .scenario-title { font-weight: 700; color: #059669; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .scenario p { font-size: 14px; margin-bottom: 6px; }
+
+  /* Future section */
+  .future-item { display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start; }
+  .future-icon { width: 40px; height: 40px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .future-content h4 { font-size: 15px; font-weight: 600; color: #1f2937; margin-bottom: 4px; }
+  .future-content p { font-size: 14px; color: #4b5563; margin-bottom: 0; }
+
+  /* Print */
+  @media print {
+    body { padding: 0; }
+    h2 { page-break-after: avoid; }
+    .step, .box, .scenario { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================== -->
+<!-- COVER PAGE -->
+<!-- ================================================================== -->
+<div class="cover">
+  <h1>Whair</h1>
+  <p class="subtitle">Your Face. Your Voice. Your Rules.</p>
+  <div class="meta">
+    Beta Access Guide<br>
+    March 2026, Confidential
+  </div>
+  <div class="hero-box">
+    <strong>Imagine this:</strong> Someone takes a photo of you from Instagram, puts it on their website to sell a product, and you never know about it. Or worse, someone uses AI to clone your voice and makes it say things you never said.<br><br>
+    <strong>Whair finds it, proves you own it, and helps you take it down or get paid for it.</strong><br><br>
+    This guide will walk you through exactly how it works, with real examples you can try yourself right now.
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- ACCESS INSTRUCTIONS -->
+<!-- ================================================================== -->
+<h2>Getting In</h2>
+
+<div class="box box-dark">
+  <p><strong>App Link:</strong> <code>https://whairbeta.up.railway.app</code></p>
+  <p><strong>Beta PIN:</strong> <code>whairbeta2026</code></p>
+  <p>Open the link in any browser. You'll be asked for the PIN once, after that, you won't see it again on that browser.</p>
+</div>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p><strong>Open the app</strong>, go to the link above in Chrome, Safari, or Firefox.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p><strong>Enter the beta PIN</strong>, type <strong>whairbeta2026</strong> and click Continue.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p><strong>Create an account</strong>, click <strong>Sign Up</strong>. Enter your name, email, and a password. Check your email for a verification link, click it, then log in.</p>
+  </div>
+</div>
+
+<p>That's it, you're in. You'll land on your Dashboard, which is your home base for everything that follows.</p>
+
+<!-- ================================================================== -->
+<!-- THE VALUE — WHY THIS MATTERS TO YOU -->
+<!-- ================================================================== -->
+<h2>Why This Matters to You</h2>
+
+<p>If your face or voice has ever appeared anywhere online, social media, a news article, a podcast, a YouTube video, then your likeness is already out there. And right now, you have almost no way to know who's using it, where, or how.</p>
+
+<p>Whair gives you three things no one else offers together:</p>
+
+<ol>
+  <li><strong>Proof that it's yours</strong>, a timestamped, cryptographic record that proves you owned your photos and voice recordings before anyone else used them.</li>
+  <li><strong>The ability to find unauthorized use</strong>, Whair scans specific pages or the entire internet and shows you everywhere your face appears.</li>
+  <li><strong>A way to do something about it</strong>, generate a ready-to-submit takedown package for any platform (Instagram, YouTube, TikTok, X), or choose to license it and get paid instead.</li>
+</ol>
+
+<p>Let's walk through each of these so you can see how they work in practice.</p>
+
+<!-- ================================================================== -->
+<!-- REGISTER YOUR IDENTITY -->
+<!-- ================================================================== -->
+<h2>1. Register Your Identity</h2>
+
+<p>The first thing Whair needs is to know what you look like. You upload a few clear photos of your face, and Whair creates a secure reference set, like a digital fingerprint of your likeness that it uses to find you across the internet.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>A recording artist uploads 6 photos of herself, different outfits, different lighting, some from photoshoots, some casual. Now Whair knows her face. From this point on, if her image shows up on any website Whair scans, it will recognize her and flag it.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>In the sidebar, click <strong>Identity &rarr; Enroll</strong>.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Enter your display name (your real name or stage name).</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Drag and drop <strong>5 or more clear photos of your face</strong> into the upload area. Use different angles and lighting for best results, front-facing, side profile, natural light, studio light.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <p>Click <strong>Enroll</strong>. Wait a few seconds. You'll see a success message when it's done.</p>
+  </div>
+</div>
+
+<div class="box box-gray">
+  <p><strong>What just happened behind the scenes:</strong> Each photo was hashed (a unique digital fingerprint was created), cryptographically signed (proving you uploaded it at this exact time), and registered in Whair's system as YOUR likeness. If anyone ever disputes ownership, you have proof.</p>
+</div>
+
+<p>You can view all your registered photos anytime under <strong>Identity &rarr; Assets</strong>. You can add more photos later or remove ones you don't want.</p>
+
+<!-- ================================================================== -->
+<!-- REGISTER YOUR VOICE -->
+<!-- ================================================================== -->
+<h2>2. Register Your Voice</h2>
+
+<p>Voice cloning is one of the fastest-growing threats in AI. Someone can take a short clip of you speaking and create a synthetic version of your voice that says anything they want. The first step to protecting against this is establishing that the voice is yours.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>An influencer records a 20-second clip of herself speaking naturally and uploads it. Now there's a timestamped, signed record proving this is her real voice, not an AI clone. If a deepfake version of her voice surfaces later, she has provenance proof that her original voice was registered first.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>In the sidebar, click <strong>Identity &rarr; Voice</strong>.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Click <strong>Add Voice Sample</strong>. Give it a name (e.g. "Interview clip" or "Voice memo") and upload an audio file (MP3, WAV, etc.), even 10&ndash;30 seconds is enough.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Click <strong>Upload Sample</strong>. You'll see it appear in your voice library with a green "Ready" badge.</p>
+  </div>
+</div>
+
+<div class="box box-gray">
+  <p><strong>Note:</strong> Voice registration currently stores and signs your voice samples as proof of ownership. Active voice scanning, where Whair automatically finds AI clones of your voice across the internet, is coming in a future update (more on that at the end of this guide).</p>
+</div>
+
+<!-- ================================================================== -->
+<!-- PROVE YOU OWN IT — VERIFICATION -->
+<!-- ================================================================== -->
+<h2>3. Prove You Own It</h2>
+
+<p>Ownership disputes happen all the time online. Someone reposts your photo and claims it's theirs. A brand uses your image and says they found it on a stock site. Without proof of original ownership, these fights are hard to win.</p>
+
+<p>Whair's verification system creates a tamper-proof record, like getting a document notarized, but digital and instant.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>A model signs her portfolio photos in Whair on March 12. Two months later, she finds a clothing brand using one of those photos on their website without permission. She can prove she owned the photo before the brand used it, her Whair record shows the exact date, time, and cryptographic hash. That's admissible evidence.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>Go to <strong>Verification &rarr; Sign</strong>. Select one of your enrolled photos and click <strong>Sign Asset</strong>. You'll see the cryptographic signature and timestamp.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Go to <strong>Verification &rarr; Verify</strong>. Upload the same photo you just signed. Whair will confirm: <em>"Verified, this file was registered by [Your Name] on [Date]."</em></p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Now try uploading a random image from the internet. Whair will say <em>"No match found"</em>, because it was never registered.</p>
+  </div>
+</div>
+
+<p>Your full signing history is always available under <strong>Verification &rarr; History</strong>.</p>
+
+<!-- ================================================================== -->
+<!-- FIND UNAUTHORIZED USE — DETECTION -->
+<!-- ================================================================== -->
+<h2>4. Find Where Your Face Appears Online</h2>
+
+<p>This is where Whair gets powerful. Once you've registered your identity, you can search the internet for your face. Whair offers two ways to do this:</p>
+
+<h3>Option A: Scan a specific page</h3>
+
+<p>If you suspect a particular website or article is using your image, you can scan it directly.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>An actress sees a blog article about her and suspects they're using her photos without a license. She pastes the URL into Whair, hits Scan, and within seconds sees that 3 of the 8 images on the page match her face with 94% confidence. Each match is automatically logged as an incident she can act on.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>Go to <strong>Detection &rarr; Scan URL</strong>.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Paste any URL that contains photos of a face you enrolled. For testing, try a celebrity fan page or news article (if you enrolled with a public figure's photos for testing purposes).</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Click <strong>Start Scan</strong>. Wait 15&ndash;60 seconds. You'll see how many images were found on the page, how many faces were detected, and how many matched your registered identity.</p>
+  </div>
+</div>
+
+<h3>Option B: Search the entire internet</h3>
+
+<p>This is the big one. Instead of checking one page at a time, you can search the entire web for everywhere your image appears.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>A fitness influencer wants to know everywhere her photos are being used. She selects her best headshot, clicks "Search," and Google's AI finds her image on 47 different websites, including 3 she never authorized. Stock photo sites, overseas e-commerce stores, random blogs. She had no idea.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>Go to <strong>Detection &rarr; Web Search</strong>.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>You'll see your enrolled reference photos. Click on the clearest one.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Click <strong>Search for this image</strong>. Wait about 30&ndash;60 seconds while Google scans the web.</p>
+  </div>
+</div>
+
+<p>The results show you: pages that contain your image, exact matches (pixel-perfect copies), partial matches (cropped or edited versions), and any labels or entities Google identified. Each discovered page automatically creates an incident in your dashboard.</p>
+
+<h3>Reviewing what was found</h3>
+
+<p>After any scan or search, go to <strong>Detection &rarr; Incidents</strong> to see every match. Each incident shows the source URL, the platform, match confidence (e.g. 94%), and status. Click into any incident for full details.</p>
+
+<!-- ================================================================== -->
+<!-- TAKE ACTION — ENFORCEMENT -->
+<!-- ================================================================== -->
+<h2>5. Take It Down</h2>
+
+<p>Finding unauthorized use is only half the battle. The other half is getting it removed. Normally, filing a DMCA takedown means navigating confusing platform forms, gathering evidence, writing legal statements, it can take hours per violation. Whair does it in one click.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>A content creator finds her face being used on a scam Instagram ad. From the incident page in Whair, she clicks "Create Takedown." Whair automatically assembles an evidence packet: her identity, the source URL, match confidence, timestamps, provenance proof, and a statement of rights. She copies it into Instagram's report form, submits, and the post is removed within 48 hours. Total time: 5 minutes.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>Go to <strong>Detection &rarr; Incidents</strong> and click on any incident.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Click <strong>Create Takedown</strong>. Whair generates a full evidence packet with everything the platform needs.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>You'll see a link to the correct platform's report form (YouTube, Instagram, TikTok, or X). In a real scenario, you'd click through, paste the evidence, and submit.</p>
+  </div>
+</div>
+
+<p>Track the status of all your takedowns under <strong>Enforcement &rarr; Cases</strong>. Each case moves through stages: Draft &rarr; Submitted &rarr; Acknowledged &rarr; Resolved.</p>
+
+<!-- ================================================================== -->
+<!-- GET PAID — MONETIZATION -->
+<!-- ================================================================== -->
+<h2>6. Get Paid Instead</h2>
+
+<p>Not every unauthorized use needs to be taken down. Sometimes it's smarter to get paid. If a brand or website is using your image and it's actually helping your visibility, you can offer them a license instead of a takedown threat.</p>
+
+<div class="scenario">
+  <div class="scenario-title">Real-Life Example</div>
+  <p>A musician discovers a blog using her concert photo as their header image. Instead of a takedown, she creates a license through Whair: $200 for non-exclusive use for one year. The blog owner pays through Stripe, and the musician earns money from content that was already out there. Everyone wins.</p>
+</div>
+
+<h3>Try it now:</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <p>Go to <strong>Monetization &rarr; Licenses</strong>. This is where you can create, view, and manage licenses.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <p>Check out <strong>Monetization &rarr; Connect</strong> to see the Stripe integration, this is where you'd connect your bank account to receive payments.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <p>Visit <strong>Monetization &rarr; Earnings</strong> to see the earnings dashboard where revenue from licenses would appear.</p>
+  </div>
+</div>
+
+<div class="box box-gray">
+  <p><strong>Note:</strong> Monetization is available in the app for you to explore. The full payment flow (where a licensee actually pays and you receive funds) is still being finalized. For now, you can see how it will work and create test licenses.</p>
+</div>
+
+<!-- ================================================================== -->
+<!-- ALSO IN THE APP -->
+<!-- ================================================================== -->
+<h2>7. Other Features Worth Knowing About</h2>
+
+<p>These are smaller features that round out the platform. You don't need to test each one step-by-step, just know they're there.</p>
+
+<ul>
+  <li><strong>Automated Monitoring</strong> (<em>Monitoring</em> in the sidebar), Set up recurring scans on specific URLs. For example, schedule a daily scan of TMZ's page about you, and Whair will automatically flag new unauthorized uses without you lifting a finger.</li>
+  <li><strong>Whitelist / Authorized Sources</strong> (<em>Settings &rarr; Whitelist</em>), Add domains or accounts you've authorized to use your likeness (your own website, your management company, brand partners). Whair won't flag these as violations.</li>
+  <li><strong>Profile &amp; Security Settings</strong> (<em>Settings</em>), Update your display name, change your password, and manage your account security.</li>
+  <li><strong>Scan Results History</strong> (<em>Detection &rarr; Results</em>), A log of every scan you've ever run, with status, image counts, and match counts.</li>
+</ul>
+
+<!-- ================================================================== -->
+<!-- THE FULL PICTURE -->
+<!-- ================================================================== -->
+<h2>8. The Full Picture</h2>
+
+<p>Here's the complete journey a creator goes through with Whair:</p>
+
+<div class="box box-green">
+  <p><strong>Register</strong> your face and voice &rarr; <strong>Sign</strong> your assets to prove ownership &rarr; <strong>Scan</strong> the internet to find where you appear &rarr; <strong>Review</strong> incidents &rarr; <strong>Take down</strong> unauthorized use OR <strong>license it</strong> and get paid &rarr; <strong>Monitor</strong> automatically so nothing slips through.</p>
+  <p style="margin-top: 10px;">This loop runs continuously. Register once, protect forever.</p>
+</div>
+
+<!-- ================================================================== -->
+<!-- WHERE WE'RE HEADING -->
+<!-- ================================================================== -->
+<h2>9. Where We're Heading</h2>
+
+<p>What you're testing today is the foundation. Here's what's coming next and where we're ultimately going.</p>
+
+<h3>Coming Soon</h3>
+
+<div class="future-item">
+  <div class="future-icon">1</div>
+  <div class="future-content">
+    <h4>Active Voice Protection</h4>
+    <p>Right now, Whair registers and signs your voice samples as proof of ownership. Soon, we'll add voice matching, the ability to scan audio content across the internet and detect when someone is using your real voice or an AI clone of it. This means if someone creates a deepfake song using your voice, Whair will find it.</p>
+  </div>
+</div>
+
+<div class="future-item">
+  <div class="future-icon">2</div>
+  <div class="future-content">
+    <h4>Deepfake Audio Detection</h4>
+    <p>Beyond just matching your voice, Whair will be able to classify whether a piece of audio is real or AI-generated. If someone clones your voice to make a fake endorsement, a scam call, or fabricated content, we'll flag it as synthetic, and give you the evidence to prove it.</p>
+  </div>
+</div>
+
+<div class="future-item">
+  <div class="future-icon">3</div>
+  <div class="future-content">
+    <h4>Industry-Standard Content Credentials (C2PA)</h4>
+    <p>We're upgrading our verification system to use C2PA, the same content provenance standard that YouTube, Adobe, and major platforms are adopting. This means your signed assets will carry verifiable credentials that platforms can automatically recognize, making your proof of ownership universally accepted.</p>
+  </div>
+</div>
+
+<div class="future-item">
+  <div class="future-icon">4</div>
+  <div class="future-content">
+    <h4>Mobile App</h4>
+    <p>A native mobile experience so you can register assets, check incidents, and manage takedowns from your phone. Get notified instantly when your likeness is detected somewhere new.</p>
+  </div>
+</div>
+
+<h3>The Ultimate Vision</h3>
+
+<div class="box box-blue">
+  <p>Picture this: you open Whair and see a <strong>3D avatar of yourself</strong>, a spinning, lifelike digital model that combines your face and your voice. This is your <strong>complete digital identity</strong>, registered, verified, and protected in one place.</p>
+  <p style="margin-top:10px;">From this single identity hub, every part of your likeness is monitored: your face across every website, your voice across every podcast and video, your image in AI training datasets. Anything unauthorized gets flagged instantly. You decide what gets taken down and what gets licensed. Revenue flows directly to you.</p>
+  <p style="margin-top:10px;">That's the future we're building. <strong>One identity. Full visibility. Total control.</strong></p>
+</div>
+
+<p>To get there, we're working on:</p>
+<ul>
+  <li>Integrating speaker verification services for real-time voice matching at internet scale</li>
+  <li>Adding AI deepfake video detection to catch synthetic video content</li>
+  <li>Building platform partnerships for expedited takedowns (so removals happen in hours, not weeks)</li>
+  <li>Creating a full licensing marketplace where brands can request and pay for your likeness directly</li>
+  <li>Developing the unified identity model, face, voice, and biometrics combined into a single protected digital asset</li>
+</ul>
+
+<p>What you're testing today is the working foundation that all of this builds on. Your feedback shapes what we build next.</p>
+
+<!-- ================================================================== -->
+<!-- QUICK REFERENCE -->
+<!-- ================================================================== -->
+<h2>Quick Reference</h2>
+
+<div class="box box-dark">
+  <p><strong>App:</strong> <code>https://whairbeta.up.railway.app</code></p>
+  <p><strong>Beta PIN:</strong> <code>whairbeta2026</code></p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px;">
+  <tr style="background:#f3f4f6;">
+    <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-weight:600;">I want to...</th>
+    <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-weight:600;">Go to...</th>
+  </tr>
+  <tr><td style="padding:10px 12px; border:1px solid #e5e7eb;">Register my face</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Identity &rarr; Enroll</td></tr>
+  <tr style="background:#f9fafb;"><td style="padding:10px 12px; border:1px solid #e5e7eb;">Register my voice</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Identity &rarr; Voice</td></tr>
+  <tr><td style="padding:10px 12px; border:1px solid #e5e7eb;">Prove I own a photo</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Verification &rarr; Sign</td></tr>
+  <tr style="background:#f9fafb;"><td style="padding:10px 12px; border:1px solid #e5e7eb;">Check if a photo is registered</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Verification &rarr; Verify</td></tr>
+  <tr><td style="padding:10px 12px; border:1px solid #e5e7eb;">Scan a suspicious website</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Detection &rarr; Scan URL</td></tr>
+  <tr style="background:#f9fafb;"><td style="padding:10px 12px; border:1px solid #e5e7eb;">Search the whole internet for my face</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Detection &rarr; Web Search</td></tr>
+  <tr><td style="padding:10px 12px; border:1px solid #e5e7eb;">See all violations found</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Detection &rarr; Incidents</td></tr>
+  <tr style="background:#f9fafb;"><td style="padding:10px 12px; border:1px solid #e5e7eb;">File a takedown</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Click "Create Takedown" on any incident</td></tr>
+  <tr><td style="padding:10px 12px; border:1px solid #e5e7eb;">License my likeness instead</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Monetization &rarr; Licenses</td></tr>
+  <tr style="background:#f9fafb;"><td style="padding:10px 12px; border:1px solid #e5e7eb;">Set up automatic monitoring</td><td style="padding:10px 12px; border:1px solid #e5e7eb;">Monitoring</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<!-- FOOTER -->
+<!-- ================================================================== -->
+<div style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 13px;">
+  <p>Whair, Your Face. Your Voice. Your Rules.</p>
+  <p>&copy; 2026 Whair Inc., Confidential</p>
+</div>
+
+</body>
+</html>
