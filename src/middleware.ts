@@ -15,7 +15,9 @@ const PUBLIC_ROUTES = new Set([
   "/reset-password",
   "/verify-email",
   "/callback",
+  "/beta-gate",
   "/api/health",
+  "/api/beta-gate",
   "/api/auth/callback",
   "/api/monetization/webhook",
 ]);
