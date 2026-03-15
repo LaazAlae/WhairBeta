@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
       .from("assets")
       .update({
         hmac_signature: signature,
-        status: "signed",
+        status: "active",
       })
       .eq("id", assetId)
 

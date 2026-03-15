@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
+   * Enable standalone output for Docker / Railway deployment.
+   * Produces a self-contained build in .next/standalone.
+   */
+  output: "standalone",
+
+  /**
    * Image optimization configuration.
    * Allows loading images from Supabase Storage.
    */

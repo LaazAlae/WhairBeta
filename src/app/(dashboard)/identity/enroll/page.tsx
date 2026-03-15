@@ -79,6 +79,11 @@ export default function EnrollPage() {
       const data = await response.json()
 
       if (!response.ok) {
+        // Show detailed errors if available
+        const details = data.error?.details
+        if (details && Array.isArray(details)) {
+          details.forEach((d: string) => toast.error(d))
+        }
         throw new Error(data.error?.message ?? "Enrollment failed")
       }
 

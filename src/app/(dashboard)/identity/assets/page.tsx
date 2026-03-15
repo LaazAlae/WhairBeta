@@ -1,9 +1,6 @@
-import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { PageHeader } from "@/components/shared/page-header"
-import { Button } from "@/components/ui/button"
-import { AssetGrid } from "@/components/identity/asset-grid"
-import { Plus } from "lucide-react"
+import { AssetsPageClient } from "./assets-page-client"
 import type { Asset } from "@/components/identity/asset-card"
 
 export default async function AssetsPage() {
@@ -45,22 +42,5 @@ export default async function AssetsPage() {
 
   const assets = (data ?? []) as Asset[]
 
-  return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Assets"
-        description={`${assets.length} registered asset${assets.length !== 1 ? "s" : ""}`}
-        action={
-          <Link href="/identity/enroll">
-            <Button>
-              <Plus className="mr-2 size-4" />
-              Add Photos
-            </Button>
-          </Link>
-        }
-      />
-
-      <AssetGrid assets={assets} />
-    </div>
-  )
+  return <AssetsPageClient initialAssets={assets} />
 }

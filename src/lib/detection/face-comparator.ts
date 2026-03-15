@@ -15,7 +15,7 @@ export interface ComparisonSummary {
  * Compares a target image against multiple reference images to find the best match.
  *
  * Uses AWS Rekognition to compare the target against each reference image.
- * Returns the best match across all references.
+ * Exits early once a match above threshold is found.
  *
  * @param targetBuffer - The target image to check
  * @param referenceBuffers - Array of reference (enrolled) images to compare against
@@ -58,20 +58,23 @@ export async function compareAgainstReference(
         threshold
       )
 
-      console.log(
-        `[FaceComparator] Reference ${i}: similarity=${result.similarity.toFixed(2)}%, matched=${result.matched}`
-      )
-
       if (result.similarity > bestSimilarity) {
         bestSimilarity = result.similarity
         matchedReferenceIndex = i
+      }
+
+      // Early exit: if we found a strong match, no need to check more references
+      if (result.matched && result.similarity >= threshold) {
+        console.log(
+          `[FaceComparator] Match found on reference ${i}: ${result.similarity.toFixed(1)}% — skipping remaining`
+        )
+        break
       }
     } catch (error) {
       console.error(
         `[FaceComparator] Error comparing against reference ${i}:`,
         error instanceof Error ? error.message : error
       )
-      // Continue with remaining references
     }
   }
 

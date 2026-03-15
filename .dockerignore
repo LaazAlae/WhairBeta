@@ -1,0 +1,39 @@
+# Dependencies (re-installed in the container)
+node_modules
+
+# Build output (re-built in the container)
+.next
+
+# Environment files (secrets injected via Railway variables)
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+
+# Version control
+.git
+.gitignore
+
+# Editor / IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (no need to copy into themselves)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Railway config
+railway.toml
+
+# Documentation & misc
+README.md
+LICENSE
+*.md

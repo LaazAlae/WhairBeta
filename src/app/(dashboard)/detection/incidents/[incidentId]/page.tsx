@@ -11,6 +11,8 @@ import { EvidencePreview } from "@/components/detection/evidence-preview"
 import { MatchConfidenceBar } from "@/components/detection/match-confidence-bar"
 import { IncidentActions } from "./incident-actions"
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
+
 interface IncidentDetailPageProps {
   params: Promise<{ incidentId: string }>
 }
@@ -136,36 +138,118 @@ export default async function IncidentDetailPage({
           </Card>
 
           {/* Reference comparison */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Image Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Detected Image
-                  </p>
-                  <div className="flex aspect-square items-center justify-center rounded-lg border bg-muted/50">
-                    <ImageIcon className="size-8 text-muted-foreground" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Your Reference
-                  </p>
-                  <div className="flex aspect-square items-center justify-center rounded-lg border bg-muted/50">
-                    <ImageIcon className="size-8 text-muted-foreground" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ImageComparison incident={incident} creatorId={creator.id} />
 
           {/* Action buttons */}
           <IncidentActions incident={incident} />
         </div>
       </div>
     </div>
+  )
+}
+
+async function ImageComparison({
+  incident,
+  creatorId,
+}: {
+  incident: Record<string, unknown>
+  creatorId: string
+}) {
+  const supabase = await createClient()
+  const meta = incident.metadata as Record<string, unknown> | null
+  const refAssetId = typeof meta?.reference_asset_id === "string" ? meta.reference_asset_id : null
+
+  // Fetch the specific matched reference asset, or fall back to first one
+  let refAsset: { storage_path: string; file_name: string } | null = null
+  if (refAssetId) {
+    const { data } = await supabase
+      .from("assets")
+      .select("storage_path, file_name")
+      .eq("id", refAssetId)
+      .eq("creator_id", creatorId)
+      .single()
+    refAsset = data
+  }
+  if (!refAsset) {
+    const { data } = await supabase
+      .from("assets")
+      .select("storage_path, file_name")
+      .eq("creator_id", creatorId)
+      .eq("is_canonical", true)
+      .eq("status", "active")
+      .not("file_type", "like", "audio/%")
+      .limit(1)
+      .single()
+    refAsset = data
+  }
+
+  // Build detected image URL
+  let detectedUrl: string | null = null
+  if (incident.matched_image_path && supabaseUrl) {
+    detectedUrl = `${supabaseUrl}/storage/v1/object/public/evidence/${incident.matched_image_path}`
+  } else if (typeof incident.source_url === "string") {
+    const ext = incident.source_url.split("?")[0].split(".").pop()?.toLowerCase()
+    if (["jpg", "jpeg", "png", "webp", "gif"].includes(ext ?? "")) {
+      detectedUrl = incident.source_url
+    }
+  }
+  // Fallback: web detection incidents store a matched image URL in metadata
+  if (!detectedUrl) {
+    const meta = incident.metadata as Record<string, unknown> | null
+    if (typeof meta?.matched_image_url === "string" && meta.matched_image_url) {
+      detectedUrl = meta.matched_image_url
+    }
+  }
+
+  const referenceUrl =
+    refAsset?.storage_path && supabaseUrl
+      ? `${supabaseUrl}/storage/v1/object/public/assets/${refAsset.storage_path}`
+      : null
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Image Comparison</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">
+              Detected Image
+            </p>
+            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border bg-muted/50">
+              {detectedUrl ? (
+                <img
+                  src={detectedUrl}
+                  alt="Detected match"
+                  className="size-full object-cover rounded-lg"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                />
+              ) : (
+                <ImageIcon className="size-8 text-muted-foreground" />
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">
+              Your Reference
+            </p>
+            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border bg-muted/50">
+              {referenceUrl ? (
+                <img
+                  src={referenceUrl}
+                  alt={refAsset?.file_name ?? "Reference photo"}
+                  className="size-full object-cover rounded-lg"
+                  loading="lazy"
+                />
+              ) : (
+                <ImageIcon className="size-8 text-muted-foreground" />
+              )}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

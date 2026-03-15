@@ -98,7 +98,7 @@ export function AssetCard({ asset, onDelete, onSign }: AssetCardProps) {
 
         {/* Actions */}
         <div className="flex gap-2">
-          {onSign && asset.status !== "signed" && (
+          {onSign && !asset.hmac_signature && (
             <Button
               variant="outline"
               size="sm"
@@ -114,7 +114,7 @@ export function AssetCard({ asset, onDelete, onSign }: AssetCardProps) {
               variant="destructive"
               size="sm"
               onClick={() => onDelete(asset.id)}
-              className={cn(onSign && asset.status !== "signed" ? "" : "flex-1")}
+              className={cn(onSign && !asset.hmac_signature ? "" : "flex-1")}
             >
               <Trash2 className="mr-1 size-3" />
               Delete

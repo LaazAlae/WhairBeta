@@ -5,7 +5,21 @@ import {
   type BoundingBox,
   type FaceDetail,
 } from "@aws-sdk/client-rekognition"
+import sharp from "sharp"
 import { AWS_REGION, isAWSConfigured } from "./config"
+
+/**
+ * Converts an image buffer to JPEG format for Rekognition compatibility.
+ * Rekognition only supports JPEG and PNG — this handles WebP, GIF, etc.
+ */
+async function toJpegBuffer(imageBuffer: Buffer): Promise<Buffer> {
+  try {
+    return await sharp(imageBuffer).jpeg({ quality: 90 }).toBuffer()
+  } catch {
+    // If conversion fails, return original and let Rekognition handle it
+    return imageBuffer
+  }
+}
 
 /**
  * Simplified face detection result.
@@ -57,8 +71,9 @@ export async function detectFaces(
 
   try {
     const client = getClient()
+    const jpegBuffer = await toJpegBuffer(imageBuffer)
     const command = new DetectFacesCommand({
-      Image: { Bytes: imageBuffer },
+      Image: { Bytes: jpegBuffer },
       Attributes: ["DEFAULT"],
     })
 
@@ -102,9 +117,13 @@ export async function compareFaces(
 
   try {
     const client = getClient()
+    const [sourceJpeg, targetJpeg] = await Promise.all([
+      toJpegBuffer(sourceBuffer),
+      toJpegBuffer(targetBuffer),
+    ])
     const command = new CompareFacesCommand({
-      SourceImage: { Bytes: sourceBuffer },
-      TargetImage: { Bytes: targetBuffer },
+      SourceImage: { Bytes: sourceJpeg },
+      TargetImage: { Bytes: targetJpeg },
       SimilarityThreshold: threshold,
     })
 

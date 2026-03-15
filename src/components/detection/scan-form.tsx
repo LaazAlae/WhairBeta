@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { Globe, Upload, Search, Loader2 } from "lucide-react"
+import { Globe, Upload, Search, Loader2, CheckCircle2, AlertTriangle } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
 import {
   Card,
   CardContent,
@@ -16,14 +17,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-type ScanStep = "idle" | "scanning" | "extracting" | "comparing" | "done"
-
-const stepMessages: Record<ScanStep, string> = {
-  idle: "",
-  scanning: "Scanning... Fetching content from URL",
-  extracting: "Extracting images from page...",
-  comparing: "Comparing faces against your reference photos...",
-  done: "Scan complete! Redirecting...",
+interface ScanProgress {
+  phase: string
+  current: number
+  total: number
+  matches: number
+  message: string
 }
 
 export function ScanForm() {
@@ -32,7 +31,94 @@ export function ScanForm() {
   const [targetUrl, setTargetUrl] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [step, setStep] = useState<ScanStep>("idle")
+  const [progress, setProgress] = useState<ScanProgress | null>(null)
+
+  const runStreamingScan = useCallback(
+    async (requestInit: RequestInit) => {
+      setIsSubmitting(true)
+      setProgress({
+        phase: "fetching",
+        current: 0,
+        total: 0,
+        matches: 0,
+        message: "Starting scan...",
+      })
+
+      try {
+        const response = await fetch("/api/detection/scan", {
+          ...requestInit,
+          headers: {
+            ...((requestInit.headers as Record<string, string>) ?? {}),
+            Accept: "text/event-stream",
+          },
+        })
+
+        if (!response.ok) {
+          const data = await response.json()
+          throw new Error(data.error?.message ?? "Failed to initiate scan")
+        }
+
+        const reader = response.body?.getReader()
+        if (!reader) throw new Error("No response stream")
+
+        const decoder = new TextDecoder()
+        let buffer = ""
+        let scanId: string | null = null
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split("\n\n")
+          buffer = lines.pop() ?? ""
+
+          for (const line of lines) {
+            const dataLine = line.replace(/^data: /, "").trim()
+            if (!dataLine) continue
+
+            try {
+              const event = JSON.parse(dataLine)
+
+              if (event.phase === "done") {
+                scanId = event.scan?.id ?? null
+                setProgress({
+                  phase: "complete",
+                  current: event.result?.imagesFound ?? 0,
+                  total: event.result?.imagesFound ?? 0,
+                  matches: event.result?.matches ?? 0,
+                  message: `Scan complete — ${event.result?.matches ?? 0} match${(event.result?.matches ?? 0) !== 1 ? "es" : ""} found`,
+                })
+              } else {
+                setProgress(event as ScanProgress)
+              }
+            } catch {
+              // Skip malformed events
+            }
+          }
+        }
+
+        toast.success("Scan completed successfully")
+
+        // Brief delay to show completion state
+        await new Promise((r) => setTimeout(r, 800))
+
+        if (scanId) {
+          router.push(`/detection/results/${scanId}`)
+        } else {
+          router.push("/detection/results")
+        }
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "An error occurred"
+        )
+        setProgress(null)
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [router]
+  )
 
   async function handleUrlSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,7 +128,6 @@ export function ScanForm() {
       return
     }
 
-    // Basic URL validation
     try {
       const parsed = new URL(targetUrl)
       if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
@@ -54,46 +139,11 @@ export function ScanForm() {
       return
     }
 
-    setIsSubmitting(true)
-    setStep("scanning")
-
-    try {
-      // Simulate progression steps for UX
-      const stepTimer1 = setTimeout(() => setStep("extracting"), 3000)
-      const stepTimer2 = setTimeout(() => setStep("comparing"), 6000)
-
-      const response = await fetch("/api/detection/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scanType: "url", targetUrl }),
-      })
-
-      clearTimeout(stepTimer1)
-      clearTimeout(stepTimer2)
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error?.message ?? "Failed to initiate scan")
-      }
-
-      setStep("done")
-      toast.success("Scan completed successfully")
-
-      const scanId = data.data?.scan?.id
-      if (scanId) {
-        router.push(`/detection/results/${scanId}`)
-      } else {
-        router.push("/detection/results")
-      }
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "An error occurred"
-      )
-      setStep("idle")
-    } finally {
-      setIsSubmitting(false)
-    }
+    await runStreamingScan({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scanType: "url", targetUrl }),
+    })
   }
 
   async function handleImageSubmit(e: React.FormEvent) {
@@ -104,7 +154,6 @@ export function ScanForm() {
       return
     }
 
-    // Validate file type
     if (
       !["image/jpeg", "image/png", "image/webp", "image/gif"].includes(
         selectedFile.type
@@ -114,54 +163,35 @@ export function ScanForm() {
       return
     }
 
-    // Validate file size (10MB)
     if (selectedFile.size > 10 * 1024 * 1024) {
       toast.error("File must be less than 10MB")
       return
     }
 
-    setIsSubmitting(true)
-    setStep("comparing")
+    const formData = new FormData()
+    formData.append("scanType", "image_upload")
+    formData.append("file", selectedFile)
 
-    try {
-      const formData = new FormData()
-      formData.append("scanType", "image_upload")
-      formData.append("file", selectedFile)
-
-      const response = await fetch("/api/detection/scan", {
-        method: "POST",
-        body: formData,
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error?.message ?? "Failed to initiate scan")
-      }
-
-      setStep("done")
-      toast.success("Scan completed successfully")
-
-      const scanId = data.data?.scan?.id
-      if (scanId) {
-        router.push(`/detection/results/${scanId}`)
-      } else {
-        router.push("/detection/results")
-      }
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "An error occurred"
-      )
-      setStep("idle")
-    } finally {
-      setIsSubmitting(false)
-    }
+    await runStreamingScan({
+      method: "POST",
+      body: formData,
+    })
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null
     setSelectedFile(file)
   }
+
+  const progressPercent =
+    progress && progress.total > 0
+      ? Math.round((progress.current / progress.total) * 100)
+      : progress?.phase === "fetching"
+        ? 5
+        : 0
+
+  const isComplete = progress?.phase === "complete"
+  const isError = progress?.phase === "error"
 
   return (
     <Card>
@@ -180,11 +210,11 @@ export function ScanForm() {
           }}
         >
           <TabsList>
-            <TabsTrigger value="url">
+            <TabsTrigger value="url" disabled={isSubmitting}>
               <Globe className="mr-1.5 size-4" />
               Scan URL
             </TabsTrigger>
-            <TabsTrigger value="upload">
+            <TabsTrigger value="upload" disabled={isSubmitting}>
               <Upload className="mr-1.5 size-4" />
               Upload Image
             </TabsTrigger>
@@ -258,12 +288,37 @@ export function ScanForm() {
           </TabsContent>
         </Tabs>
 
-        {isSubmitting && step !== "idle" && (
-          <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted px-4 py-3">
-            <Loader2 className="size-4 animate-spin text-primary" />
-            <p className="text-sm font-medium text-muted-foreground">
-              {stepMessages[step]}
-            </p>
+        {/* Progress indicator */}
+        {progress && (
+          <div className="mt-6 space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2">
+                {isComplete ? (
+                  <CheckCircle2 className="size-4 text-emerald-600" />
+                ) : isError ? (
+                  <AlertTriangle className="size-4 text-red-500" />
+                ) : (
+                  <Loader2 className="size-4 animate-spin text-primary" />
+                )}
+                <span className="font-medium">{progress.message}</span>
+              </div>
+              {progress.total > 0 && (
+                <span className="text-muted-foreground tabular-nums">
+                  {progress.current}/{progress.total}
+                </span>
+              )}
+            </div>
+
+            <Progress
+              value={isComplete ? 100 : progressPercent}
+              className="h-2"
+            />
+
+            {progress.matches > 0 && (
+              <p className="text-sm text-emerald-600 font-medium">
+                {progress.matches} match{progress.matches !== 1 ? "es" : ""} found so far
+              </p>
+            )}
           </div>
         )}
       </CardContent>

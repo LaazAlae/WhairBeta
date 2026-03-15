@@ -12,7 +12,7 @@ import { EvidencePacketPreview } from "./evidence-packet-preview"
 interface IncidentData {
   id: string
   source_url: string
-  platform: string
+  platform: string | null
   match_confidence: number
   screenshot_path?: string | null
   evidence_timestamp?: string | null
@@ -55,7 +55,7 @@ export function TakedownForm({ incidentId }: TakedownFormProps) {
         throw new Error(body.error?.message ?? "Failed to fetch incident details")
       }
       const data = await res.json()
-      setIncident(data.data)
+      setIncident(data.data?.incident ?? data.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load incident")
     } finally {
@@ -167,7 +167,7 @@ export function TakedownForm({ incidentId }: TakedownFormProps) {
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground">Platform</p>
-              <p className="text-sm capitalize">{incident.platform}</p>
+              <p className="text-sm capitalize">{incident.platform ?? "Unknown"}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground">Match Confidence</p>
@@ -260,7 +260,7 @@ export function TakedownForm({ incidentId }: TakedownFormProps) {
                 {result.platformReportUrl && (
                   <Button render={<a href={result.platformReportUrl} target="_blank" rel="noopener noreferrer" />}>
                       <ExternalLink className="mr-2 size-4" />
-                      Go to {incident.platform.charAt(0).toUpperCase() + incident.platform.slice(1)} Report Form
+                      Go to {incident.platform ? incident.platform.charAt(0).toUpperCase() + incident.platform.slice(1) : "Platform"} Report Form
                   </Button>
                 )}
                 <Button

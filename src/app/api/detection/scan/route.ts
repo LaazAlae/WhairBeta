@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { successResponse, errorResponse } from "@/lib/utils/api-response"
+import { errorResponse } from "@/lib/utils/api-response"
 import { AuthError, ValidationError, AppError } from "@/lib/utils/errors"
 import { urlScanSchema } from "@/lib/validations/detection"
-import { runDetectionPipeline } from "@/lib/detection/pipeline"
+import { runDetectionPipeline, type PipelineProgress } from "@/lib/detection/pipeline"
 import { logAudit } from "@/lib/security/audit"
 
 export async function POST(request: NextRequest) {
@@ -33,10 +33,11 @@ export async function POST(request: NextRequest) {
     // Validate creator has enrolled assets (reference photos)
     const { data: assets } = await supabase
       .from("assets")
-      .select("id, storage_path")
+      .select("id, storage_path, file_type")
       .eq("creator_id", creator.id)
       .eq("is_canonical", true)
-      .eq("status", "verified")
+      .eq("status", "active")
+      .not("file_type", "like", "audio/%")
 
     if (!assets || assets.length === 0) {
       throw new ValidationError(
@@ -65,7 +66,6 @@ export async function POST(request: NextRequest) {
         throw new ValidationError("No image file provided")
       }
 
-      // Validate file type
       if (
         !["image/jpeg", "image/png", "image/webp", "image/gif"].includes(
           file.type
@@ -76,7 +76,6 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Validate file size (10MB)
       if (file.size > 10 * 1024 * 1024) {
         throw new ValidationError("File must be less than 10MB")
       }
@@ -121,6 +120,7 @@ export async function POST(request: NextRequest) {
 
     // Fetch creator's canonical reference images from Supabase Storage
     const referenceBuffers: Buffer[] = []
+    const referenceAssetIds: string[] = []
     for (const asset of assets) {
       try {
         const { data: blob, error: downloadError } = await admin.storage
@@ -138,6 +138,7 @@ export async function POST(request: NextRequest) {
         if (blob) {
           const arrayBuffer = await blob.arrayBuffer()
           referenceBuffers.push(Buffer.from(arrayBuffer))
+          referenceAssetIds.push(asset.id)
         }
       } catch (err) {
         console.error(
@@ -145,12 +146,6 @@ export async function POST(request: NextRequest) {
           err
         )
       }
-    }
-
-    if (referenceBuffers.length === 0) {
-      console.warn(
-        "[ScanAPI] Could not load any reference images. Scan will proceed but no matches will be found."
-      )
     }
 
     // Log audit event
@@ -162,7 +157,75 @@ export async function POST(request: NextRequest) {
       details: { scanType, targetUrl },
     })
 
-    // Run detection pipeline synchronously
+    // Check if the client wants streaming progress
+    const wantsStream = request.headers.get("accept")?.includes("text/event-stream")
+
+    if (wantsStream) {
+      // Stream progress via Server-Sent Events
+      const encoder = new TextEncoder()
+      const stream = new ReadableStream({
+        async start(controller) {
+          const sendEvent = (data: PipelineProgress) => {
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
+            )
+          }
+
+          const result = await runDetectionPipeline(
+            {
+              scanId: scan.id,
+              creatorId: creator.id,
+              scanType,
+              targetUrl,
+              uploadedImageBuffer,
+              referenceBuffers,
+              referenceAssetIds,
+            },
+            sendEvent
+          )
+
+          // Send final result
+          const { data: updatedScan } = await admin
+            .from("scans")
+            .select("*")
+            .eq("id", scan.id)
+            .single()
+
+          await logAudit({
+            userId: user.id,
+            action: "scan.complete",
+            resourceType: "scan",
+            resourceId: scan.id,
+            details: {
+              imagesFound: result.imagesFound,
+              facesDetected: result.facesDetected,
+              matches: result.matches,
+            },
+          })
+
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({
+                phase: "done",
+                scan: updatedScan ?? scan,
+                result,
+              })}\n\n`
+            )
+          )
+          controller.close()
+        },
+      })
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        },
+      })
+    }
+
+    // Non-streaming fallback
     const result = await runDetectionPipeline({
       scanId: scan.id,
       creatorId: creator.id,
@@ -170,9 +233,9 @@ export async function POST(request: NextRequest) {
       targetUrl,
       uploadedImageBuffer,
       referenceBuffers,
+      referenceAssetIds,
     })
 
-    // Log completion
     await logAudit({
       userId: user.id,
       action: "scan.complete",
@@ -185,14 +248,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Fetch updated scan record to return the latest data
     const { data: updatedScan } = await admin
       .from("scans")
       .select("*")
       .eq("id", scan.id)
       .single()
 
-    return successResponse({ scan: updatedScan ?? scan, result }, 202)
+    return Response.json(
+      { success: true, data: { scan: updatedScan ?? scan, result } },
+      { status: 202 }
+    )
   } catch (error) {
     console.error("[ScanAPI] Error:", error)
     return errorResponse(error)

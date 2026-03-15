@@ -80,14 +80,14 @@ export default async function LicenseDetailPage({
 
   const typedLicense = license as License
 
-  // Fetch related incident if asset_ids exist
+  // Fetch related incident if linked
   let incident: Incident | null = null
-  if (typedLicense.asset_ids && typedLicense.asset_ids.length > 0) {
+  if (typedLicense.incident_id) {
     const { data } = await supabase
       .from("incidents")
       .select("*")
+      .eq("id", typedLicense.incident_id)
       .eq("creator_id", creator.id)
-      .limit(1)
       .single()
     incident = data as Incident | null
   }
@@ -158,12 +158,14 @@ export default async function LicenseDetailPage({
               <p className="text-sm">{formatDate(typedLicense.created_at)}</p>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                <Calendar className="size-3.5" /> Starts
-              </p>
-              <p className="text-sm">{formatDate(typedLicense.starts_at)}</p>
-            </div>
+            {typedLicense.paid_at && (
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Calendar className="size-3.5" /> Paid
+                </p>
+                <p className="text-sm">{formatDate(typedLicense.paid_at)}</p>
+              </div>
+            )}
 
             {typedLicense.expires_at && (
               <div className="space-y-1">
@@ -171,22 +173,6 @@ export default async function LicenseDetailPage({
                   <Calendar className="size-3.5" /> Expires
                 </p>
                 <p className="text-sm">{formatDate(typedLicense.expires_at)}</p>
-              </div>
-            )}
-
-            {typedLicense.revoked_at && (
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                  <Calendar className="size-3.5" /> Revoked
-                </p>
-                <p className="text-sm">{formatDate(typedLicense.revoked_at)}</p>
-              </div>
-            )}
-
-            {typedLicense.scope && (
-              <div className="space-y-1 sm:col-span-2">
-                <p className="text-sm font-medium text-muted-foreground">Scope</p>
-                <p className="text-sm">{typedLicense.scope}</p>
               </div>
             )}
           </div>

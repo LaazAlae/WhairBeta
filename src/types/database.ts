@@ -1,243 +1,279 @@
 /**
  * TypeScript types for all database tables.
- * Matches the Supabase/PostgreSQL schema exactly.
+ * Matches the Supabase/PostgreSQL schema from migrations 00001 + 00002.
  */
 
+// ─── Migration 001 Tables ───────────────────────────────────────────
+
 /**
- * Creator profile — the registered user who owns digital likeness rights.
+ * Creator profile — linked 1:1 to auth.users.
  * Table: creators
  */
 export interface Creator {
-  id: string; // UUID, primary key
-  user_id: string; // UUID, references auth.users
-  full_name: string; // TEXT
-  display_name: string | null; // TEXT, nullable
-  email: string; // TEXT
-  avatar_url: string | null; // TEXT, nullable
-  bio: string | null; // TEXT, nullable
-  enrolled: boolean; // BOOLEAN, default false
-  enrollment_date: Date | string | null; // TIMESTAMPTZ, nullable
-  stripe_account_id: string | null; // TEXT, nullable (Stripe Connect)
-  stripe_onboarding_complete: boolean; // BOOLEAN, default false
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  user_id: string;
+  display_name: string;
+  email: string;
+  avatar_url: string | null;
+  bio: string | null;
+  verification_status: "unverified" | "pending" | "verified" | "suspended";
+  enrollment_completed: boolean;
+  stripe_account_id: string | null;
+  stripe_onboarding_complete: boolean;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * Digital asset owned by a creator (images, videos, audio).
+ * Creator-uploaded canonical image for face matching.
  * Table: assets
  */
 export interface Asset {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  type: "image" | "video" | "audio"; // TEXT, constrained
-  filename: string; // TEXT
-  original_filename: string; // TEXT
-  mime_type: string; // TEXT
-  file_size: number; // INTEGER, bytes
-  storage_path: string; // TEXT, Supabase Storage path
-  storage_bucket: string; // TEXT
-  width: number | null; // INTEGER, nullable (images/video)
-  height: number | null; // INTEGER, nullable (images/video)
-  duration: number | null; // DECIMAL, nullable (video/audio, seconds)
-  hash_sha256: string | null; // TEXT, nullable
-  c2pa_manifest: Record<string, unknown> | null; // JSONB, nullable
-  is_reference: boolean; // BOOLEAN, default false (identity reference asset)
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  creator_id: string;
+  file_name: string | null;
+  file_type: "image/jpeg" | "image/png" | "image/webp" | null;
+  file_size: number | null;
+  storage_path: string | null;
+  sha256_hash: string | null;
+  hmac_signature: string | null;
+  is_canonical: boolean;
+  thumbnail_path: string | null;
+  status: "processing" | "active" | "archived" | "deleted";
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * Face embedding vector for facial recognition matching.
+ * Face detection results from Rekognition.
  * Table: face_embeddings
  */
 export interface FaceEmbedding {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  asset_id: string; // UUID, references assets
-  embedding_vector: number[]; // FLOAT8[] or VECTOR
-  bounding_box: Record<string, unknown> | null; // JSONB, nullable {x, y, width, height}
-  confidence: number; // DECIMAL, 0-100
-  provider: string; // TEXT, e.g. "aws_rekognition"
-  external_face_id: string | null; // TEXT, nullable (provider's face ID)
-  external_collection_id: string | null; // TEXT, nullable (provider's collection ID)
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  asset_id: string;
+  creator_id: string;
+  bounding_box: Record<string, unknown> | null;
+  confidence: number | null;
+  face_attributes: Record<string, unknown> | null;
+  rekognition_face_id: string | null;
+  status: "active" | "archived";
+  created_at: string;
 }
 
 /**
- * A scan job — either URL-based or image upload-based detection.
+ * A scan job (URL crawl, image upload, scheduled, or web detection).
  * Table: scans
  */
 export interface Scan {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  type: "url" | "image_upload" | "scheduled"; // TEXT, constrained
-  status: "pending" | "processing" | "completed" | "failed"; // TEXT, constrained
-  target_url: string | null; // TEXT, nullable
-  target_platform: string | null; // TEXT, nullable
-  uploaded_image_path: string | null; // TEXT, nullable
-  results_count: number; // INTEGER, default 0
-  error_message: string | null; // TEXT, nullable
-  started_at: Date | string | null; // TIMESTAMPTZ, nullable
-  completed_at: Date | string | null; // TIMESTAMPTZ, nullable
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  creator_id: string;
+  scan_type: "url" | "image_upload" | "scheduled" | "web_detection";
+  target_url: string | null;
+  uploaded_image_path: string | null;
+  status: "pending" | "processing" | "completed" | "failed" | "cancelled";
+  total_images_found: number;
+  total_faces_detected: number;
+  total_matches: number;
+  error_message: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  monitoring_schedule_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * A detected incident of potential likeness misuse.
+ * Detected unauthorized use of a creator's likeness.
  * Table: incidents
  */
 export interface Incident {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  scan_id: string | null; // UUID, nullable, references scans
-  platform: string; // TEXT
-  source_url: string; // TEXT
-  content_type: "image" | "video" | "audio" | "profile" | "other"; // TEXT
-  match_confidence: number; // DECIMAL, 0-100
-  status:
-    | "detected"
-    | "reviewing"
-    | "confirmed"
-    | "takedown_sent"
-    | "takedown_acknowledged"
-    | "removed"
-    | "dismissed"
-    | "licensed"; // TEXT
-  screenshot_path: string | null; // TEXT, nullable
-  screenshot_hash: string | null; // TEXT, nullable
-  content_hash: string | null; // TEXT, nullable
-  detected_at: Date | string; // TIMESTAMPTZ
-  resolved_at: Date | string | null; // TIMESTAMPTZ, nullable
-  resolution_notes: string | null; // TEXT, nullable
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  scan_id: string;
+  creator_id: string;
+  source_url: string;
+  platform: string | null;
+  match_confidence: number;
+  screenshot_path: string | null;
+  matched_image_path: string | null;
+  source_image_hash: string | null;
+  evidence_timestamp: string | null;
+  status: "new" | "reviewing" | "confirmed" | "dismissed" | "actioned";
+  action_taken: "takedown" | "license" | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * An evidence packet for enforcement actions (takedowns, disputes).
+ * Pre-packaged evidence bundle for takedowns.
  * Table: evidence_packets
  */
 export interface EvidencePacket {
-  id: string; // UUID, primary key
-  incident_id: string; // UUID, references incidents
-  creator_id: string; // UUID, references creators
-  packet_type: "takedown" | "dispute" | "legal"; // TEXT
-  content_urls: string[]; // TEXT[]
-  screenshots: string[]; // TEXT[], storage paths
-  content_hashes: string[]; // TEXT[], SHA-256 hashes
-  timestamps: Record<string, unknown>; // JSONB, {detected_at, captured_at, etc.}
-  statement_of_rights: string | null; // TEXT, nullable
-  provenance_records: string[]; // TEXT[], references to provenance record IDs
-  additional_evidence: Record<string, unknown> | null; // JSONB, nullable
-  generated_at: Date | string; // TIMESTAMPTZ
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  incident_id: string;
+  creator_id: string;
+  packet_type: "takedown" | "legal_notice" | "evidence_bundle";
+  content: Record<string, unknown>;
+  pdf_storage_path: string | null;
+  includes_provenance: boolean;
+  generated_hash: string;
+  created_at: string;
 }
 
 /**
- * An enforcement case grouping related incidents.
+ * Enforcement case submitted to a platform.
  * Table: cases
  */
 export interface Case {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  title: string; // TEXT
-  description: string | null; // TEXT, nullable
-  status: "open" | "in_progress" | "pending_response" | "resolved" | "closed"; // TEXT
-  priority: "low" | "medium" | "high" | "critical"; // TEXT
-  platform: string | null; // TEXT, nullable
-  incident_ids: string[]; // UUID[], references to incident IDs
-  evidence_packet_id: string | null; // UUID, nullable, references evidence_packets
-  assigned_to: string | null; // UUID, nullable
-  takedown_url: string | null; // TEXT, nullable (platform report URL)
-  takedown_reference: string | null; // TEXT, nullable (platform's reference/ticket ID)
-  submitted_at: Date | string | null; // TIMESTAMPTZ, nullable
-  responded_at: Date | string | null; // TIMESTAMPTZ, nullable
-  resolved_at: Date | string | null; // TIMESTAMPTZ, nullable
-  resolution_type: "removed" | "denied" | "expired" | "withdrawn" | null; // TEXT, nullable
-  notes: string | null; // TEXT, nullable
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  incident_id: string | null;
+  creator_id: string;
+  evidence_packet_id: string | null;
+  platform: string;
+  platform_report_url: string | null;
+  status:
+    | "draft"
+    | "submitted"
+    | "acknowledged"
+    | "in_review"
+    | "removed"
+    | "denied"
+    | "appealed"
+    | "closed";
+  submitted_at: string | null;
+  acknowledged_at: string | null;
+  resolved_at: string | null;
+  resolution_notes: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * A licensing agreement for authorized use of a creator's likeness.
+ * Image usage license offered by a creator.
  * Table: licenses
  */
 export interface License {
-  id: string; // UUID, primary key
-  creator_id: string; // UUID, references creators
-  licensee_name: string; // TEXT
-  licensee_email: string; // TEXT
-  licensee_company: string | null; // TEXT, nullable
-  asset_ids: string[]; // UUID[], references to asset IDs
-  license_type: "exclusive" | "non_exclusive" | "limited"; // TEXT
-  scope: string; // TEXT, description of allowed usage
-  price_cents: number; // INTEGER, price in cents
-  currency: string; // TEXT, default "usd"
-  status: "pending" | "active" | "expired" | "revoked"; // TEXT
-  stripe_payment_intent_id: string | null; // TEXT, nullable
-  stripe_transfer_id: string | null; // TEXT, nullable
-  starts_at: Date | string; // TIMESTAMPTZ
-  expires_at: Date | string | null; // TIMESTAMPTZ, nullable
-  revoked_at: Date | string | null; // TIMESTAMPTZ, nullable
-  revocation_reason: string | null; // TEXT, nullable
-  terms: Record<string, unknown> | null; // JSONB, nullable
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
-  updated_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  incident_id: string | null;
+  creator_id: string;
+  licensee_email: string | null;
+  licensee_name: string | null;
+  license_type: "single_use" | "time_limited" | "perpetual";
+  price_cents: number;
+  currency: string;
+  status: "pending" | "active" | "expired" | "revoked" | "cancelled";
+  stripe_payment_intent_id: string | null;
+  stripe_transfer_id: string | null;
+  paid_at: string | null;
+  expires_at: string | null;
+  terms: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * A provenance record proving content origin and integrity (C2PA).
+ * Provenance record forming a hash-linked chain.
  * Table: provenance_records
  */
 export interface ProvenanceRecord {
-  id: string; // UUID, primary key
-  asset_id: string; // UUID, references assets
-  creator_id: string; // UUID, references creators
-  manifest_hash: string; // TEXT, hash of the C2PA manifest
-  manifest_data: Record<string, unknown>; // JSONB, full C2PA manifest data
-  signature: string; // TEXT, cryptographic signature
-  signer_info: Record<string, unknown>; // JSONB, {name, org, cert_serial}
-  claim_generator: string; // TEXT, e.g. "Whair/1.0.0-beta"
-  assertions: Record<string, unknown>[]; // JSONB[], list of C2PA assertions
-  is_valid: boolean; // BOOLEAN
-  validation_errors: string[] | null; // TEXT[], nullable
-  parent_record_id: string | null; // UUID, nullable (for derivative works)
-  verified_at: Date | string; // TIMESTAMPTZ
-  metadata: Record<string, unknown> | null; // JSONB, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  asset_id: string;
+  creator_id: string;
+  action: "registration" | "signing" | "verification" | "export" | "revocation";
+  sha256_hash: string;
+  hmac_signature: string;
+  signing_key_id: string;
+  c2pa_manifest: Record<string, unknown> | null;
+  previous_record_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
 }
 
 /**
- * Audit log entry for tracking all significant actions.
+ * Audit log entry (append-only, server-side inserts only).
  * Table: audit_log
  */
 export interface AuditLog {
-  id: string; // UUID, primary key
-  user_id: string; // UUID, references auth.users
-  creator_id: string | null; // UUID, nullable, references creators
-  action: string; // TEXT, e.g. "identity.enroll"
-  resource_type: string; // TEXT, e.g. "creator", "asset", "incident"
-  resource_id: string | null; // UUID, nullable
-  details: Record<string, unknown> | null; // JSONB, nullable
-  ip_address: string | null; // TEXT, nullable
-  user_agent: string | null; // TEXT, nullable
-  created_at: Date | string; // TIMESTAMPTZ, default now()
+  id: string;
+  user_id: string | null;
+  creator_id: string | null;
+  action: string;
+  resource_type: string;
+  resource_id: string | null;
+  details: Record<string, unknown> | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
+// ─── Migration 002 Tables ───────────────────────────────────────────
+
+/**
+ * Scheduled monitoring scan configuration.
+ * Table: monitoring_schedules
+ */
+export interface MonitoringSchedule {
+  id: string;
+  creator_id: string;
+  name: string;
+  target_type: "url" | "platform" | "keyword";
+  target_value: string;
+  frequency: "hourly" | "daily" | "weekly";
+  is_active: boolean;
+  last_run_at: string | null;
+  next_run_at: string | null;
+  last_run_status: "success" | "failed" | "no_matches" | "matches_found" | null;
+  last_run_matches: number;
+  total_runs: number;
+  total_matches: number;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
- * Insert types (omit auto-generated fields).
+ * Whitelisted source that should not trigger incidents.
+ * Table: authorized_sources
  */
+export interface AuthorizedSource {
+  id: string;
+  creator_id: string;
+  source_type: "url" | "domain" | "account" | "platform";
+  source_value: string;
+  label: string | null;
+  notes: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Voice sample for audio likeness detection.
+ * Table: voice_prints
+ */
+export interface VoicePrint {
+  id: string;
+  creator_id: string;
+  asset_id: string | null;
+  sample_name: string;
+  duration_seconds: number | null;
+  storage_path: string;
+  storage_bucket: string;
+  sha256_hash: string | null;
+  fingerprint_data: Record<string, unknown> | null;
+  status: "processing" | "ready" | "failed" | "archived";
+  error_message: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ─── Insert Types ───────────────────────────────────────────────────
+
 export type CreatorInsert = Omit<Creator, "id" | "created_at" | "updated_at">;
 export type AssetInsert = Omit<Asset, "id" | "created_at" | "updated_at">;
 export type FaceEmbeddingInsert = Omit<FaceEmbedding, "id" | "created_at">;
@@ -248,10 +284,12 @@ export type CaseInsert = Omit<Case, "id" | "created_at" | "updated_at">;
 export type LicenseInsert = Omit<License, "id" | "created_at" | "updated_at">;
 export type ProvenanceRecordInsert = Omit<ProvenanceRecord, "id" | "created_at">;
 export type AuditLogInsert = Omit<AuditLog, "id" | "created_at">;
+export type MonitoringScheduleInsert = Omit<MonitoringSchedule, "id" | "created_at" | "updated_at">;
+export type AuthorizedSourceInsert = Omit<AuthorizedSource, "id" | "created_at" | "updated_at">;
+export type VoicePrintInsert = Omit<VoicePrint, "id" | "created_at" | "updated_at">;
 
-/**
- * Update types (all fields optional except id).
- */
+// ─── Update Types ───────────────────────────────────────────────────
+
 export type CreatorUpdate = Partial<Omit<Creator, "id" | "created_at">> & { id: string };
 export type AssetUpdate = Partial<Omit<Asset, "id" | "created_at">> & { id: string };
 export type ScanUpdate = Partial<Omit<Scan, "id" | "created_at">> & { id: string };

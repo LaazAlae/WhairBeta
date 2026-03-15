@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useState, useRef } from "react"
-import { Upload, X, CheckCircle2, ImageIcon } from "lucide-react"
+import { useCallback, useState, useRef, useEffect } from "react"
+import { Upload, X, CheckCircle2, ImageIcon, Music } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -10,7 +10,21 @@ interface FaceUploadDropzoneProps {
   disabled?: boolean
 }
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"]
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "audio/mpeg",
+  "audio/wav",
+  "audio/ogg",
+  "audio/mp4",
+  "audio/aac",
+  "audio/webm",
+]
+
+function isAudioFile(file: File): boolean {
+  return file.type.startsWith("audio/")
+}
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const MIN_FILES = 5
 const MAX_FILES = 10
@@ -25,6 +39,11 @@ export function FaceUploadDropzone({
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Notify parent whenever files change — deferred to avoid setState-during-render
+  useEffect(() => {
+    onFilesReady(files)
+  }, [files, onFilesReady])
+
   const processFiles = useCallback(
     (incoming: FileList | File[]) => {
       setError(null)
@@ -35,7 +54,7 @@ export function FaceUploadDropzone({
 
       for (const file of incomingArray) {
         if (!ALLOWED_TYPES.includes(file.type)) {
-          setError(`${file.name} is not a supported image format. Use JPEG, PNG, or WebP.`)
+          setError(`${file.name} is not a supported format. Use JPEG, PNG, WebP, MP3, WAV, OGG, or M4A.`)
           continue
         }
         if (file.size > MAX_FILE_SIZE) {
@@ -46,27 +65,19 @@ export function FaceUploadDropzone({
         newPreviews.push(URL.createObjectURL(file))
       }
 
-      setFiles((prev) => {
-        const combined = [...prev, ...newFiles].slice(0, MAX_FILES)
-        onFilesReady(combined)
-        return combined
-      })
+      setFiles((prev) => [...prev, ...newFiles].slice(0, MAX_FILES))
       setPreviews((prev) => [...prev, ...newPreviews].slice(0, MAX_FILES))
     },
-    [onFilesReady]
+    []
   )
 
   const removeFile = useCallback(
     (index: number) => {
       URL.revokeObjectURL(previews[index])
-      setFiles((prev) => {
-        const updated = prev.filter((_, i) => i !== index)
-        onFilesReady(updated)
-        return updated
-      })
+      setFiles((prev) => prev.filter((_, i) => i !== index))
       setPreviews((prev) => prev.filter((_, i) => i !== index))
     },
-    [previews, onFilesReady]
+    [previews]
   )
 
   const handleDrop = useCallback(
@@ -140,11 +151,11 @@ export function FaceUploadDropzone({
           <div>
             <p className="text-sm font-medium">
               {isAtMax
-                ? "Maximum photos reached"
-                : "Upload 5-10 clear photos of your face"}
+                ? "Maximum files reached"
+                : "Upload 5-10 photos or audio files"}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Drag and drop or click to browse. JPEG, PNG, or WebP up to 10MB each.
+              Drag and drop or click to browse. Images (JPEG, PNG, WebP) or audio (MP3, WAV, OGG, M4A) up to 10MB each.
             </p>
           </div>
         </div>
@@ -168,7 +179,7 @@ export function FaceUploadDropzone({
             hasMinimum ? "text-green-600" : "text-muted-foreground"
           )}
         >
-          {files.length} of {MIN_FILES} minimum photos selected
+          {files.length} of {MIN_FILES} minimum files selected
         </span>
       </div>
 
@@ -180,11 +191,20 @@ export function FaceUploadDropzone({
               key={`${files[index].name}-${index}`}
               className="group relative aspect-square overflow-hidden rounded-lg border bg-muted"
             >
-              <img
-                src={preview}
-                alt={`Photo ${index + 1}`}
-                className="size-full object-cover"
-              />
+              {isAudioFile(files[index]) ? (
+                <div className="flex size-full flex-col items-center justify-center gap-2 p-2">
+                  <Music className="size-8 text-muted-foreground" />
+                  <p className="line-clamp-2 text-center text-[10px] font-medium text-muted-foreground">
+                    {files[index].name}
+                  </p>
+                </div>
+              ) : (
+                <img
+                  src={preview}
+                  alt={`Photo ${index + 1}`}
+                  className="size-full object-cover"
+                />
+              )}
               {!disabled && (
                 <Button
                   variant="destructive"
@@ -198,11 +218,13 @@ export function FaceUploadDropzone({
                   <X className="size-3" />
                 </Button>
               )}
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-1.5 py-1">
-                <p className="truncate text-[10px] text-white">
-                  {files[index].name}
-                </p>
-              </div>
+              {!isAudioFile(files[index]) && (
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-1.5 py-1">
+                  <p className="truncate text-[10px] text-white">
+                    {files[index].name}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>

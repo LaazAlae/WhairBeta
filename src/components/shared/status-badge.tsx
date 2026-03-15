@@ -27,6 +27,13 @@ const statusConfig: Record<
   in_review: { variant: "secondary", className: "bg-purple-100 text-purple-700" },
   appealed: { variant: "outline", className: "border-amber-400 text-amber-700 bg-amber-50" },
   closed: { variant: "secondary", className: "bg-gray-100 text-gray-600" },
+  actioned: { variant: "default", className: "bg-emerald-100 text-emerald-700" },
+  confirmed: { variant: "outline", className: "border-red-400 text-red-700 bg-red-50" },
+  dismissed: { variant: "secondary", className: "bg-gray-100 text-gray-600" },
+  cancelled: { variant: "secondary", className: "bg-gray-100 text-gray-600" },
+  archived: { variant: "secondary", className: "bg-gray-100 text-gray-600" },
+  unverified: { variant: "outline", className: "border-gray-300 text-gray-600 bg-gray-50" },
+  ready: { variant: "default", className: "bg-emerald-100 text-emerald-700" },
 }
 
 function formatStatusLabel(status: string): string {

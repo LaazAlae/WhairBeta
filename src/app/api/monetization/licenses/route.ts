@@ -210,11 +210,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Update the incident status to 'licensed'
+    // Update the incident status to 'actioned' (licensed)
     await supabase
       .from("incidents")
       .update({
-        status: "licensed",
+        status: "actioned",
+        action_taken: "license",
         updated_at: now,
       })
       .eq("id", incidentId)

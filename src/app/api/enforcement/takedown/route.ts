@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     // Get creator profile
     const { data: creator, error: creatorError } = await supabase
       .from("creators")
-      .select("id, display_name, email, verified")
+      .select("id, display_name, email, verification_status")
       .eq("user_id", user.id)
       .single()
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
         id: creator.id,
         display_name: creator.display_name,
         email: creator.email,
-        verified: creator.verified,
+        verified: creator.verification_status === "verified",
       },
       provenanceRecords: provenanceRecords.length > 0 ? provenanceRecords : undefined,
     })
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
         incident_id: incidentId,
         creator_id: creator.id,
         evidence_packet_id: evidencePacket.id,
-        platform: incident.platform,
+        platform: incident.platform ?? "other",
         platform_report_url: platformReportUrl,
         status: "draft",
         metadata: {

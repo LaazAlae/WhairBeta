@@ -1,7 +1,7 @@
 "use client"
 
 import { format } from "date-fns"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, ImageIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { StatusBadge } from "@/components/shared/status-badge"
@@ -36,10 +36,31 @@ function truncateUrl(url: string, maxLength: number = 60): string {
 /**
  * Incident summary card displaying platform, source URL, confidence, status, and timestamp.
  */
+function getThumbnailUrl(incident: Incident): string | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (incident.matched_image_path && supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/evidence/${incident.matched_image_path}`
+  }
+  if (incident.source_url) {
+    const ext = incident.source_url.split("?")[0].split(".").pop()?.toLowerCase()
+    if (["jpg", "jpeg", "png", "webp", "gif"].includes(ext ?? "")) {
+      return incident.source_url
+    }
+  }
+  // Fallback: web detection incidents store a matched image URL in metadata
+  const metaUrl = (incident.metadata as Record<string, unknown> | null)?.matched_image_url
+  if (typeof metaUrl === "string" && metaUrl) {
+    return metaUrl
+  }
+  return null
+}
+
 export function IncidentCard({ incident, onClick }: IncidentCardProps) {
   const platformClass = incident.platform
     ? platformColors[incident.platform] ?? "bg-gray-100 text-gray-700"
     : null
+
+  const thumbUrl = getThumbnailUrl(incident)
 
   return (
     <Card
@@ -51,6 +72,23 @@ export function IncidentCard({ incident, onClick }: IncidentCardProps) {
       onClick={onClick}
     >
       <CardContent className="flex items-center gap-4 py-4">
+        {/* Thumbnail */}
+        <div className="size-14 shrink-0 overflow-hidden rounded-md border bg-muted">
+          {thumbUrl ? (
+            <img
+              src={thumbUrl}
+              alt="Matched image"
+              className="size-full object-cover"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center">
+              <ImageIcon className="size-6 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+
         {/* Left: platform + URL */}
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex items-center gap-2">

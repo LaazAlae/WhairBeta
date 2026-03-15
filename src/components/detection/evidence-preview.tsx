@@ -29,6 +29,28 @@ interface EvidencePreviewProps {
   incident: Incident
 }
 
+function getEvidenceImageUrl(incident: Incident): string | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (incident.matched_image_path && supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/evidence/${incident.matched_image_path}`
+  }
+  if (incident.screenshot_path && supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/evidence/${incident.screenshot_path}`
+  }
+  if (incident.source_url) {
+    const ext = incident.source_url.split("?")[0].split(".").pop()?.toLowerCase()
+    if (["jpg", "jpeg", "png", "webp", "gif", "bmp", "svg"].includes(ext ?? "")) {
+      return incident.source_url
+    }
+  }
+  // Fallback: web detection incidents store a matched image URL in metadata
+  const metaUrl = (incident.metadata as Record<string, unknown> | null)?.matched_image_url
+  if (typeof metaUrl === "string" && metaUrl) {
+    return metaUrl
+  }
+  return null
+}
+
 /**
  * Evidence preview card showing screenshot, source URL, confidence, timestamp, and hash.
  */
@@ -37,6 +59,8 @@ export function EvidencePreview({ incident }: EvidencePreviewProps) {
     ? `${incident.source_image_hash.slice(0, 8)}...${incident.source_image_hash.slice(-8)}`
     : null
 
+  const imageUrl = getEvidenceImageUrl(incident)
+
   return (
     <Card>
       <CardHeader>
@@ -44,19 +68,19 @@ export function EvidencePreview({ incident }: EvidencePreviewProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Screenshot / matched image thumbnail */}
-        <div className="flex items-center justify-center rounded-lg border bg-muted/50 p-6">
-          {incident.screenshot_path || incident.matched_image_path ? (
-            <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md bg-muted">
-              {/* In production, this would load from Supabase storage */}
-              <div className="flex h-full items-center justify-center">
-                <ImageIcon className="size-12 text-muted-foreground" />
-                <span className="ml-2 text-sm text-muted-foreground">
-                  Evidence image
-                </span>
-              </div>
+        <div className="flex items-center justify-center rounded-lg border bg-muted/50 p-2">
+          {imageUrl ? (
+            <div className="relative w-full max-w-md overflow-hidden rounded-md bg-muted">
+              <img
+                src={imageUrl}
+                alt="Evidence — detected match"
+                className="w-full rounded-md object-contain"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+              />
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+            <div className="flex flex-col items-center gap-2 py-6 text-muted-foreground">
               <ImageIcon className="size-10" />
               <p className="text-sm">No screenshot available</p>
             </div>

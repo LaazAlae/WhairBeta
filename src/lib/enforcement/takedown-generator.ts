@@ -13,7 +13,7 @@ export interface TakedownIncident {
   scan_id: string
   creator_id: string
   source_url: string
-  platform: string
+  platform: string | null
   match_confidence: number
   screenshot_path?: string | null
   matched_image_path?: string | null
@@ -84,7 +84,7 @@ export async function generateTakedownPacket(params: {
     },
     infringing_content: {
       url: incident.source_url,
-      platform: incident.platform,
+      platform: incident.platform ?? "unknown",
       screenshot_url: incident.screenshot_path ?? null,
       detected_at: incident.evidence_timestamp ?? incident.created_at,
       content_hash: incident.source_image_hash ?? null,

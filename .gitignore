@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# product guide / internal docs (not for public repo)
+WHAIR_PRODUCT_GUIDE.html
+
+# credentials & secrets
+*.key
+credentials.json
+service-account.json
+google-credentials.json

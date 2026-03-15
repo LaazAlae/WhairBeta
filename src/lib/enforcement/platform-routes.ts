@@ -5,9 +5,10 @@ import { platforms, type Platform } from "@/config/platforms"
  * Falls back to the first available report URL if the exact type is not found.
  */
 export function getPlatformReportUrl(
-  platform: string,
+  platform: string | null | undefined,
   reportType: "copyright" | "impersonation"
 ): string | null {
+  if (!platform) return null
   const config = platforms[platform.toLowerCase()]
   if (!config) return null
 
@@ -25,8 +26,9 @@ export function getPlatformReportUrl(
  * Returns all available report URLs for a platform as an object.
  */
 export function getPlatformReportUrls(
-  platform: string
+  platform: string | null | undefined
 ): Record<string, string> {
+  if (!platform) return {}
   const config = platforms[platform.toLowerCase()]
   if (!config) return {}
   return config.reportUrls
@@ -56,7 +58,8 @@ export function getPlatformFromDomain(domain: string): string {
  * Retrieves the full platform configuration by ID.
  * Returns undefined if not found.
  */
-export function getPlatformConfig(platform: string): Platform | undefined {
+export function getPlatformConfig(platform: string | null | undefined): Platform | undefined {
+  if (!platform) return undefined
   return platforms[platform.toLowerCase()]
 }
 

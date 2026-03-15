@@ -191,7 +191,7 @@ export function ProvenanceViewer() {
                 <p className="mt-2 text-lg font-medium">
                   {result.verified
                     ? "This file is verified"
-                    : "No provenance record found for this file"}
+                    : "Unverified"}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {result.message}

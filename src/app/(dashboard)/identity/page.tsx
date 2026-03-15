@@ -92,9 +92,20 @@ export default async function IdentityPage() {
           {/* Profile summary */}
           <Card>
             <CardContent className="flex items-center gap-4 py-2">
-              <div className="rounded-full bg-primary/10 p-3">
-                <UserCircle className="size-8 text-primary" />
-              </div>
+              {assets.length > 0 && assets[0].storage_path ? (
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-primary/20">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/assets/${assets[0].storage_path}`}
+                    alt={creator.display_name ?? "Profile"}
+                    className="size-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="rounded-full bg-primary/10 p-3">
+                  <UserCircle className="size-8 text-primary" />
+                </div>
+              )}
               <div className="flex-1">
                 <p className="text-lg font-medium">
                   {creator.display_name ?? "Creator"}

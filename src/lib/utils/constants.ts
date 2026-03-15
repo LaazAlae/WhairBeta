@@ -125,14 +125,11 @@ export type AssetType = (typeof ASSET_TYPES)[number];
  * Incident status values.
  */
 export const INCIDENT_STATUSES = [
-  "detected",
+  "new",
   "reviewing",
   "confirmed",
-  "takedown_sent",
-  "takedown_acknowledged",
-  "removed",
   "dismissed",
-  "licensed",
+  "actioned",
 ] as const;
 
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
@@ -141,10 +138,13 @@ export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
  * Case status values.
  */
 export const CASE_STATUSES = [
-  "open",
-  "in_progress",
-  "pending_response",
-  "resolved",
+  "draft",
+  "submitted",
+  "acknowledged",
+  "in_review",
+  "removed",
+  "denied",
+  "appealed",
   "closed",
 ] as const;
 
@@ -158,6 +158,7 @@ export const LICENSE_STATUSES = [
   "active",
   "expired",
   "revoked",
+  "cancelled",
 ] as const;
 
 export type LicenseStatus = (typeof LICENSE_STATUSES)[number];

@@ -153,85 +153,108 @@ export async function POST(request: NextRequest) {
     }
 
     const createdAssets = []
+    const fileErrors: string[] = []
 
     // Process each file
     for (const file of files) {
-      const arrayBuffer = await file.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
+      try {
+        const arrayBuffer = await file.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
 
-      // Hash the file
-      const sha256Hash = await hashFileFromArrayBuffer(arrayBuffer)
+        // Hash the file
+        const sha256Hash = await hashFileFromArrayBuffer(arrayBuffer)
 
-      // Upload to Supabase Storage
-      const fileId = generateUUID()
-      const extension = file.name.split(".").pop() ?? "jpg"
-      const storagePath = `${creator.id}/${fileId}.${extension}`
+        // Upload to Supabase Storage
+        const fileId = generateUUID()
+        const extension = file.name.split(".").pop() ?? "jpg"
+        const storagePath = `${creator.id}/${fileId}.${extension}`
 
-      const { error: uploadError } = await admin.storage
-        .from("assets")
-        .upload(storagePath, buffer, {
-          contentType: file.type,
-          upsert: false,
-        })
+        const { error: uploadError } = await admin.storage
+          .from("assets")
+          .upload(storagePath, buffer, {
+            contentType: file.type,
+            upsert: false,
+          })
 
-      if (uploadError) {
-        console.error(`Failed to upload ${file.name}:`, uploadError.message)
-        continue
-      }
+        if (uploadError) {
+          console.error(`[Enroll] Storage upload failed for ${file.name}:`, uploadError.message)
+          fileErrors.push(`${file.name}: storage upload failed — ${uploadError.message}`)
+          continue
+        }
 
-      // Sign the hash
-      const timestamp = new Date().toISOString()
-      const payload = createProvenancePayload(sha256Hash, creator.id, timestamp)
-      const { signature, keyId } = signData(payload)
+        // Sign the hash
+        const timestamp = new Date().toISOString()
+        const payload = createProvenancePayload(sha256Hash, creator.id, timestamp)
+        const { signature, keyId } = signData(payload)
 
-      // Insert asset record
-      const { data: asset, error: assetError } = await admin
-        .from("assets")
-        .insert({
+        // Insert asset record
+        const { data: asset, error: assetError } = await admin
+          .from("assets")
+          .insert({
+            creator_id: creator.id,
+            file_name: file.name,
+            file_type: file.type,
+            file_size: file.size,
+            storage_path: storagePath,
+            sha256_hash: sha256Hash,
+            hmac_signature: signature,
+            status: "active",
+            created_at: timestamp,
+          })
+          .select()
+          .single()
+
+        if (assetError || !asset) {
+          console.error(`[Enroll] DB insert failed for ${file.name}:`, assetError?.message)
+          fileErrors.push(`${file.name}: database insert failed — ${assetError?.message}`)
+          continue
+        }
+
+        // Insert provenance record (action: 'registration')
+        await admin.from("provenance_records").insert({
+          asset_id: asset.id,
           creator_id: creator.id,
-          file_name: file.name,
-          file_type: file.type,
-          file_size: file.size,
-          storage_path: storagePath,
+          action: "registration",
           sha256_hash: sha256Hash,
           hmac_signature: signature,
-          status: "registered",
+          signing_key_id: keyId,
+          previous_record_id: null,
+          metadata: {
+            file_name: file.name,
+            file_type: file.type,
+            file_size: file.size,
+          },
           created_at: timestamp,
         })
-        .select()
-        .single()
 
-      if (assetError || !asset) {
-        console.error(`Failed to insert asset ${file.name}:`, assetError?.message)
-        continue
+        createdAssets.push(asset)
+      } catch (fileError) {
+        console.error(`[Enroll] Error processing ${file.name}:`, fileError)
+        fileErrors.push(`${file.name}: ${fileError instanceof Error ? fileError.message : "unknown error"}`)
       }
-
-      // Insert provenance record (action: 'registration')
-      await admin.from("provenance_records").insert({
-        asset_id: asset.id,
-        creator_id: creator.id,
-        action: "registration",
-        sha256_hash: sha256Hash,
-        hmac_signature: signature,
-        signing_key_id: keyId,
-        previous_record_id: null,
-        metadata: {
-          file_name: file.name,
-          file_type: file.type,
-          file_size: file.size,
-        },
-        created_at: timestamp,
-      })
-
-      createdAssets.push(asset)
     }
 
-    // Update creator: enrollment_completed = true
+    // If ALL files failed, return an error with details
+    if (createdAssets.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "ENROLLMENT_FAILED",
+            message: `All ${files.length} files failed to process`,
+            details: fileErrors,
+          },
+        },
+        { status: 500 }
+      )
+    }
+
+    // Update creator: enrollment_completed = true, verified
     await admin
       .from("creators")
       .update({
         enrollment_completed: true,
-        verification_status: "pending",
+        verification_status: "verified",
       })
       .eq("id", creator.id)
 
@@ -261,6 +284,10 @@ export async function POST(request: NextRequest) {
             enrollment_completed: true,
           },
           assets: createdAssets,
+          ...(fileErrors.length > 0 && {
+            warnings: fileErrors,
+            message: `${createdAssets.length} of ${files.length} files processed successfully`,
+          }),
         },
       },
       { status: 201 }

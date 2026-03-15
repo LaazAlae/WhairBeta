@@ -9,11 +9,7 @@ function getSigningSecret(): string {
 }
 
 function getSigningKeyId(): string {
-  const keyId = process.env.WHAIR_SIGNING_KEY_ID
-  if (!keyId) {
-    throw new Error("WHAIR_SIGNING_KEY_ID environment variable is not set")
-  }
-  return keyId
+  return process.env.WHAIR_SIGNING_KEY_ID ?? "whair-default-key"
 }
 
 /**
@@ -74,5 +70,8 @@ export function createProvenancePayload(
   creatorId: string,
   timestamp: string
 ): string {
-  return `${hash}:${creatorId}:${timestamp}`
+  // Normalize timestamp to ISO format so signing and verification
+  // produce the same payload regardless of PostgreSQL formatting
+  const normalizedTs = new Date(timestamp).toISOString()
+  return `${hash}:${creatorId}:${normalizedTs}`
 }
