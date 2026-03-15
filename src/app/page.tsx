@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import {
   Search,
   ShieldCheck,
@@ -77,9 +78,13 @@ export default function LandingPage() {
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-gray-950/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-white">
-              <span className="text-sm font-bold text-gray-950">W</span>
-            </div>
+            <Image
+              src="/logo.jpeg"
+              alt="Whair"
+              width={32}
+              height={32}
+              className="size-8 rounded-lg"
+            />
             <span className="text-lg font-semibold text-white">Whair</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -268,9 +273,13 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded-md bg-gray-950">
-                <span className="text-xs font-bold text-white">W</span>
-              </div>
+              <Image
+                src="/logo.jpeg"
+                alt="Whair"
+                width={28}
+                height={28}
+                className="size-7 rounded-md"
+              />
               <span className="text-sm font-medium text-gray-900">Whair</span>
             </div>
             <p className="text-sm text-gray-500">

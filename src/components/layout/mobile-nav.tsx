@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { ShieldCheck, LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 import { navItems } from "@/config/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
@@ -49,7 +50,7 @@ export function MobileNav({ open, onClose, user }: MobileNavProps) {
       <SheetContent side="left" className="w-72 bg-gray-950 text-white p-0 border-r-0">
         <SheetHeader className="px-6 pt-5 pb-4">
           <SheetTitle className="flex items-center gap-2 text-white">
-            <ShieldCheck className="size-6 text-emerald-400" />
+            <Image src="/logo.jpeg" alt="Whair" width={24} height={24} className="size-6 rounded" />
             <span className="text-lg font-semibold">Whair</span>
           </SheetTitle>
         </SheetHeader>

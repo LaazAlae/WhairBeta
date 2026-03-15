@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { ShieldCheck, LogOut, Settings, ChevronDown } from "lucide-react"
+import { LogOut, Settings, ChevronDown } from "lucide-react"
 import { navItems } from "@/config/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
@@ -59,7 +60,7 @@ export function Sidebar({ user }: SidebarProps) {
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-gray-950 text-white">
       {/* Logo */}
       <div className="flex items-center gap-2 px-6 h-16 border-b border-white/10">
-        <ShieldCheck className="size-7 text-emerald-400" />
+        <Image src="/logo.jpeg" alt="Whair" width={28} height={28} className="size-7 rounded-md" />
         <span className="text-xl font-semibold tracking-tight">Whair</span>
       </div>
 

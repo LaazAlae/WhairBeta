@@ -36,6 +36,8 @@ export function buildCspHeader(): string {
     "default-src": ["'self'"],
     "script-src": [
       "'self'",
+      "'unsafe-inline'",
+      "'unsafe-eval'",
       "https://js.stripe.com",
     ],
     "style-src": [

@@ -87,6 +87,11 @@ export const RATE_LIMITS = {
     limit: 200,
     windowMs: 60 * 1000,
   },
+  /** Beta gate PIN verification (strict to prevent brute force) */
+  BETA_GATE: {
+    limit: 5,
+    windowMs: 60 * 1000,
+  },
 } as const;
 
 /**

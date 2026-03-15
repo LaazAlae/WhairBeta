@@ -32,6 +32,16 @@ const AUTH_ROUTES = new Set([
 ]);
 
 /**
+ * Routes exempt from the beta access gate.
+ * Must be accessible for the gate itself to function.
+ */
+const BETA_GATE_EXEMPT = new Set([
+  "/beta-gate",
+  "/api/beta-gate",
+  "/api/health",
+]);
+
+/**
  * Checks whether a pathname matches any of the public routes.
  * Handles both exact matches and prefix matches for nested routes.
  */
@@ -67,6 +77,13 @@ function getClientIp(request: NextRequest): string {
 }
 
 /**
+ * Expected beta access cookie value.
+ * The API route sets this when the correct PIN is entered.
+ * Using the signing secret as the token ensures it can't be guessed.
+ */
+const BETA_COOKIE_TOKEN = process.env.WHAIR_SIGNING_SECRET ?? "";
+
+/**
  * Adds security headers to the response.
  */
 function addSecurityHeaders(response: NextResponse): void {
@@ -84,6 +101,20 @@ function addSecurityHeaders(response: NextResponse): void {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // -----------------------------------------------------------------------
+  // 0. Beta access gate — blocks ALL access unless PIN cookie is valid
+  // -----------------------------------------------------------------------
+  const betaPin = process.env.BETA_ACCESS_PIN;
+  if (betaPin && !BETA_GATE_EXEMPT.has(pathname)) {
+    const betaCookie = request.cookies.get("beta_access")?.value;
+    if (!betaCookie || betaCookie !== BETA_COOKIE_TOKEN) {
+      const gateUrl = request.nextUrl.clone();
+      gateUrl.pathname = "/beta-gate";
+      gateUrl.search = "";
+      return NextResponse.redirect(gateUrl);
+    }
+  }
 
   // -----------------------------------------------------------------------
   // 1. Rate limit API routes
